@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products - Astitv</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#0a0a0a;color:white;}
+
+/* NAVBAR */
+header{
+display:flex;
+justify-content:space-between;
+padding:15px 50px;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
+}
+header h2{color:gold;}
+nav a{color:white;margin:0 15px;text-decoration:none;}
+
+/* TOP BAR */
+.top-bar{
+display:flex;
+justify-content:space-between;
+padding:30px 50px;
+flex-wrap:wrap;
+gap:20px;
+}
+.search{padding:10px;width:250px;border-radius:20px;border:none;outline:none;}
+.filter button{
+padding:10px 20px;
+margin:5px;
+border:none;
+border-radius:20px;
+cursor:pointer;
+background:#222;
+color:white;
+}
+.filter button.active,
+.filter button:hover{background:gold;color:black;}
+
+/* PRODUCTS */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:30px;
+padding:30px 50px;
+}
+.card{
+background:rgba(255,255,255,0.05);
+border-radius:20px;
+overflow:hidden;
+transition:0.4s;
+}
+.card:hover{
+transform:translateY(-10px) scale(1.03);
+box-shadow:0 0 30px rgba(255,215,0,0.3);
+}
+.card img{
+width:100%;
+height:250px;
+object-fit:cover;
+}
+.content{
+padding:20px;
+}
+.price{
+color:gold;
+margin:10px 0;
+}
+.btn{
+width:100%;
+padding:10px;
+background:gold;
+border:none;
+border-radius:20px;
+cursor:pointer;
+font-weight:bold;
+}
+
+/* MODAL */
+#detailModal{
+display:none;
+position:fixed;
+top:0; left:0;
+width:100%; height:100%;
+background:rgba(0,0,0,0.9);
+justify-content:center;
+align-items:center;
+z-index:2000;
+overflow:auto;
+padding:50px 20px;
+}
+.modal-inner{
+background:#111;
+color:white;
+border-radius:20px;
+max-width:800px;
+width:100%;
+padding:30px;
+position:relative;
+display:flex;
+flex-wrap:wrap;
+gap:20px;
+}
+#closeModal{
+position:absolute; top:15px; right:20px;
+font-size:30px; cursor:pointer; font-weight:bold;
+}
+#modalImage{
+width:100%; border-radius:15px; object-fit:cover;
+}
+#modalDetails{
+max-height:400px; overflow-y:auto; line-height:1.6; padding-right:10px;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+<h2>ASTITV</h2>
+<nav>
+<a href="index.html">Home</a>
+<a href="cart.html" style="position:relative;">Cart
+  <span id="cartCount" 
+        style="position:absolute; top:-8px; right:-8px; background:gold; color:black; 
+               font-size:12px; font-weight:bold; padding:2px 6px; border-radius:50%; min-width:18px; text-align:center;">
+    0
+  </span>
+</a>
+</nav>
+</header>
+
+<div class="top-bar">
+<input type="text" id="search" class="search" placeholder="Search products..." onkeyup="searchProduct()">
+
+<div class="filter">
+<button onclick="filterCategory('all')" class="active">All</button>
+<button onclick="filterCategory('Pure Brass')">Pure Brass</button>
+<button onclick="filterCategory('Gift Items')">Gift Items</button>
+<button onclick="filterCategory('Idols')">Idols</button>
+<button onclick="filterCategory('Pooja Essentials')">Pooja Essentials</button>
+</div>
+</div>
+
+<div class="grid" id="productGrid"></div>
+
+<!-- Modal for full product details -->
+<div id="detailModal">
+  <div class="modal-inner">
+    <span id="closeModal">&times;</span>
+    <div style="flex:1 1 300px;text-align:center;">
+      <img id="modalImage" src="" alt=""/>
+    </div>
+    <div style="flex:1 1 300px; display:flex; flex-direction:column; gap:15px;">
+      <h2 id="modalName" style="font-size:28px;color:gold;"></h2>
+      <p id="modalPrice" style="font-size:20px;font-weight:bold;">Price: </p>
+      <p id="modalCategory" style="font-size:16px;opacity:0.8;">Category: </p>
+      <hr style="border:1px solid gold;margin:10px 0;">
+      <h3 style="color:gold;margin-bottom:10px;">Full Details</h3>
+      <div id="modalDetails"></div>
+      <button class="btn" style="margin-top:auto;" onclick="addToCart(document.getElementById('modalName').innerText)">Add to Cart</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let products = [];
+let currentCategory = "all";
+
+/* FETCH FROM GOOGLE SHEET */
+async function fetchProducts(){
+  try{
+    let res = await fetch("https://script.google.com/macros/s/AKfycbwvUdn4OSiFy3JeJWPfM8ah_V6T3hBCl6nFxyEqy4ASn4F_9BucnH1CB8oSvadgrd1f/exec?type=products");
+    let data = await res.json();
+
+    // Map entire row dynamically
+    products = data.map(p => p);
+
+    displayProducts();
+  }catch(err){
+    console.log("Error loading products", err);
+  }
+}
+
+/* DISPLAY PRODUCTS */
+function displayProducts(){
+  let grid = document.getElementById("productGrid");
+  grid.innerHTML = "";
+
+  let searchValue = document.getElementById("search").value.toLowerCase().trim();
+
+  products.forEach(p=>{
+    let name = p.name || p[0];
+    let category = (p.category || p[2] || "").toLowerCase();
+    let price = p.price || p[1];
+    let img = p.img || p[3];
+
+    // Advanced search: check if any word in searchValue exists in any property
+    let matchSearch = searchValue === "" || Object.values(p).some(val=>{
+      if(!val) return false;
+      return val.toString().toLowerCase().includes(searchValue);
+    });
+
+    // Category filter
+    let matchCategory = (currentCategory === "all" || category === currentCategory.toLowerCase());
+
+    if(matchSearch && matchCategory){
+      grid.innerHTML += `
+      <div class="card">
+        <img src="${img}">
+        <div class="content">
+          <h3>${name}</h3>
+          <p class="price">₹${price}</p>
+          <button class="btn" onclick='showDetailsDynamic(${JSON.stringify(p)})'>View Details</button>
+          <br><br>
+          <a href="product-detail.html?name=${encodeURIComponent(name)}" style="color:gold;">Go to Page</a>
+        </div>
+      </div>`;
+    }
+  });
+}
+
+/* SEARCH */
+function searchProduct(){ displayProducts(); }
+
+/* FILTER */
+function filterCategory(cat){
+  currentCategory = cat;
+  document.querySelectorAll(".filter button").forEach(btn=>btn.classList.remove("active"));
+  event.target.classList.add("active");
+  displayProducts();
+}
+
+/* CART */
+// update badge
+function updateCartCount(){
+  let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  let cartCountElem = document.getElementById("cartCount");
+  if(cartCountElem){
+    cartCountElem.innerText = cartItems.length;
+    cartCountElem.style.display = cartItems.length > 0 ? "flex" : "none";
+  }
+}
+
+// call on page load
+updateCartCount();
+
+// call after adding product to cart
+function addToCart(product){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart.push(product);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount(); // update badge live
+  alert("Added to cart 🛒");
+  
+  // optional: send to Google Sheet
+  fetch("https://script.google.com/macros/s/AKfycbwvUdn4OSiFy3JeJWPfM8ah_V6T3hBCl6nFxyEqy4ASn4F_9BucnH1CB8oSvadgrd1f/exec?type=cart", {
+    method:"POST",
+    body: JSON.stringify({product: product})
+  });
+}
+/* SHOW FULL DETAILS IN MODAL DYNAMICALLY */
+function showDetailsDynamic(productRow){
+  let name = productRow.name || productRow[0];
+  let img = productRow.img || productRow[3];
+  let price = productRow.price || productRow[1];
+  let category = productRow.category || productRow[2];
+
+  document.getElementById("modalName").innerText = name;
+  document.getElementById("modalImage").src = img;
+  document.getElementById("modalPrice").innerText = "Price: ₹" + price;
+  document.getElementById("modalCategory").innerText = "Category: " + category;
+
+  let detailsHtml = "";
+  // Add remaining columns as details
+  for(let i=4;i<Object.keys(productRow).length;i++){
+    let val = productRow[i];
+    if(val && val!="") detailsHtml += `<p>${val}</p>`;
+  }
+  // Also check named detail keys if exist
+  ['detail1','detail2','detail3','detail4'].forEach(k=>{
+    if(productRow[k]) detailsHtml += `<p>${productRow[k]}</p>`;
+  });
+
+  document.getElementById("modalDetails").innerHTML = detailsHtml;
+  document.getElementById("detailModal").style.display = "flex";
+}
+
+/* CLOSE MODAL */
+document.getElementById("closeModal").onclick = function(){
+  document.getElementById("detailModal").style.display = "none";
+}
+
+/* CLOSE MODAL WHEN CLICKING OUTSIDE */
+window.onclick = function(e){
+  if(e.target == document.getElementById("detailModal")){
+    document.getElementById("detailModal").style.display = "none";
+  }
+}
+
+/* INIT */
+fetchProducts();
+</script>
+
+</body>
+</html>

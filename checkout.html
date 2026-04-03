@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout - Astitv</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{background:#0a0a0a;color:white;}
+
+/* NAVBAR */
+header{
+display:flex;justify-content:space-between;
+padding:15px 50px;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
+}
+header h2{color:gold;}
+nav a{color:white;margin:0 15px;text-decoration:none;}
+
+/* CONTAINER */
+.container{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:30px;
+padding:50px;
+}
+
+/* FORM */
+.form{
+background:rgba(255,255,255,0.05);
+padding:30px;
+border-radius:20px;
+}
+.form input,.form textarea{
+width:100%;
+margin:10px 0;
+padding:12px;
+border:none;
+border-radius:10px;
+outline:none;
+}
+
+/* SUMMARY */
+.summary{
+background:rgba(255,255,255,0.05);
+padding:30px;
+border-radius:20px;
+}
+.summary h2{color:gold;}
+.item{display:flex;justify-content:space-between;margin:10px 0;}
+
+/* BUTTON */
+.btn{
+margin-top:20px;width:100%;
+padding:15px;background:gold;border:none;
+font-weight:bold;border-radius:30px;cursor:pointer;
+transition:0.3s;
+}
+.btn:hover{box-shadow:0 0 20px gold;transform:scale(1.05);}
+
+/* SUCCESS */
+.success{
+display:none;text-align:center;padding:100px;
+}
+.success h1{color:gold;font-size:40px;}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>ASTITV</h2>
+<nav>
+<a href="index.html">Home</a>
+<a href="cart.html">Cart</a>
+</nav>
+</header>
+
+<div class="container">
+
+<!-- FORM -->
+<div class="form">
+<h2>Shipping Details</h2>
+
+<input id="name" placeholder="Full Name">
+<input id="phone" placeholder="Phone Number">
+<textarea id="address" placeholder="Full Address"></textarea>
+
+<div class="payment">
+<h3>Payment Method</h3>
+<label><input type="radio" name="pay" checked> Cash on Delivery</label>
+<label><input type="radio" name="pay"> Online Payment</label>
+</div>
+
+<!-- 🔥 SIMPLE QR PAYMENT -->
+<div id="upiSection" style="display:none; margin-top:20px; text-align:center;">
+  <h3>Scan QR to Pay</h3>
+
+  <p>Pay ₹<span id="upiAmount"></span></p>
+
+  <img id="qrImage" width="220" style="border-radius:10px; margin-top:10px;">
+
+  <br><br>
+
+  <button class="btn" onclick="confirmPayment()">I Have Paid ✅</button>
+</div>
+
+<!-- SUMMARY -->
+<div class="summary">
+<h2>Order Summary</h2>
+<div id="items"></div>
+<h3>Total: ₹<span id="total">0</span></h3>
+</div>
+
+</div>
+
+<!-- SUCCESS -->
+<div class="success" id="successBox">
+<h1>🎉 Order Placed Successfully!</h1>
+<p>Thank you for shopping with Astitv</p>
+<button class="btn" onclick="downloadBill()">Download Bill</button>
+</div>
+
+<script>
+
+let API_URL = "https://script.google.com/macros/s/AKfycbwvUdn4OSiFy3JeJWPfM8ah_V6T3hBCl6nFxyEqy4ASn4F_9BucnH1CB8oSvadgrd1f/exec";
+
+let cartData = JSON.parse(localStorage.getItem("cart")) || [];
+let productMap = {};
+let total = 0;
+
+/* 🔥 LOAD PRODUCTS FROM SHEET */
+async function loadProducts(){
+let res = await fetch(API_URL + "?type=products");
+let data = await res.json();
+
+data.forEach(p=>{
+productMap[p[0]] = Number(p[1]) || 0;
+});
+
+renderSummary();
+}
+
+/* 🔥 SUMMARY CALCULATION */
+function renderSummary(){
+let container = document.getElementById("items");
+container.innerHTML = "";
+total = 0;
+
+let count = {};
+
+cartData.forEach(item=>{
+count[item] = (count[item] || 0) + 1;
+});
+
+for(let item in count){
+let qty = count[item];
+let price = productMap[item] || 0;
+let itemTotal = price * qty;
+
+total += itemTotal;
+
+container.innerHTML += `
+<div class="item">
+<span>${item} × ${qty}</span>
+<span>₹${itemTotal}</span>
+</div>`;
+}
+
+document.getElementById("total").innerText = total;
+document.getElementById("upiAmount").innerText = total;
+}
+
+/* 🔥 PAYMENT TOGGLE (UPDATED) */
+document.querySelectorAll("input[name='pay']").forEach(r=>{
+  r.addEventListener("change", function(){
+
+    if(this.parentElement.innerText.includes("Online")){
+      
+      document.getElementById("upiSection").style.display = "block";
+
+      let upiLink = `upi://pay?pa=yourupi@upi&pn=Astitv&am=${total}`;
+
+      document.getElementById("qrImage").src =
+      "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" +
+      encodeURIComponent(upiLink);
+
+    }else{
+      document.getElementById("upiSection").style.display = "none";
+    }
+
+  });
+});
+
+/* 🔥 SHOW QR */
+document.querySelectorAll("input[name='upi']").forEach(r=>{
+r.addEventListener("change", function(){
+
+let upiLink = `upi://pay?pa=yourupi@upi&pn=Astitv&am=${total}`;
+
+document.getElementById("qrImage").src =
+"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" +
+encodeURIComponent(upiLink);
+
+document.getElementById("qrBox").style.display = "block";
+});
+});
+
+/* 🔥 CONFIRM PAYMENT */
+function confirmPayment(){
+alert("Payment Successful ✅");
+}
+
+/* 🔥 PLACE ORDER */
+async function placeOrder(){
+
+let name = document.getElementById("name").value.trim();
+let phone = document.getElementById("phone").value.trim();
+let address = document.getElementById("address").value.trim();
+
+if(!name || !phone || !address){
+alert("Fill all details ⚠️");
+return;
+}
+
+if(cartData.length === 0){
+alert("Cart empty ❌");
+return;
+}
+
+try{
+await fetch(API_URL + "?type=order", {
+method:"POST",
+body: JSON.stringify({
+name:name,
+phone:phone,
+address:address,
+products: cartData.join(", "),
+total: total
+})
+});
+}catch(e){console.log(e);}
+
+/* SUCCESS */
+localStorage.removeItem("cart");
+
+document.querySelector(".container").style.display="none";
+document.getElementById("successBox").style.display="block";
+}
+
+/* 🔥 DOWNLOAD BILL */
+function downloadBill(){
+
+let content = `
+ASTITV LUXURY
+
+Customer: ${document.getElementById("name").value}
+Phone: ${document.getElementById("phone").value}
+Address: ${document.getElementById("address").value}
+
+Total Paid: ₹${total}
+
+Thank You ❤️
+`;
+
+let blob = new Blob([content], { type: "text/plain" });
+let link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+link.download = "Astitv_Bill.txt";
+link.click();
+}
+
+/* INIT */
+loadProducts();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Detail - Astitv</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{
+background:#0a0a0a;
+color:white;
+}
+
+/* NAVBAR */
+header{
+display:flex;
+justify-content:space-between;
+padding:15px 50px;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
+}
+
+header h2{color:gold;}
+
+nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+}
+
+/* CONTAINER */
+.container{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:50px;
+padding:50px;
+}
+
+/* IMAGE */
+.image img{
+width:100%;
+border-radius:20px;
+transition:0.3s;
+}
+
+.image img:hover{
+transform:scale(1.05);
+}
+
+/* DETAILS */
+.details h1{
+font-size:35px;
+margin-bottom:10px;
+}
+
+.price{
+color:gold;
+font-size:25px;
+margin:10px 0;
+}
+
+.desc{
+opacity:0.8;
+line-height:1.6;
+margin-bottom:20px;
+}
+
+/* BUTTON */
+.btn{
+padding:15px 30px;
+background:gold;
+border:none;
+border-radius:30px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.btn:hover{
+transform:scale(1.1);
+box-shadow:0 0 20px gold;
+}
+
+/* EXTRA */
+.extra{
+margin-top:30px;
+opacity:0.7;
+}
+
+/* COMMENTS */
+.comments{
+margin:50px;
+}
+
+.comments input, .comments textarea{
+width:100%;
+margin:10px 0;
+padding:10px;
+border-radius:10px;
+border:none;
+}
+
+.comment-box{
+background:rgba(255,255,255,0.05);
+padding:10px;
+margin:10px 0;
+border-radius:10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h2>ASTITV</h2>
+<nav>
+<a href="index.html">Home</a>
+<a href="products.html">Products</a>
+<a href="cart.html">Cart</a>
+</nav>
+</header>
+
+<div class="container">
+
+<!-- IMAGE -->
+<div class="image">
+<img id="productImg" src="">
+</div>
+
+<!-- DETAILS -->
+<div class="details">
+<h1 id="productName">Product</h1>
+<p class="price">₹<span id="productPrice">0</span></p>
+
+<p class="desc">
+Premium quality brass decor item designed to enhance your home aesthetics with luxury and elegance.
+</p>
+
+<button class="btn" onclick="addToCart()">Add to Cart 🛒</button>
+
+<div class="extra">
+<p>✔ Free Delivery</p>
+<p>✔ 7 Days Return</p>
+<p>✔ Premium Quality</p>
+</div>
+
+</div>
+
+</div>
+
+<!-- COMMENTS SECTION -->
+<div class="comments">
+<h2>Customer Reviews 💬</h2>
+
+<input id="userName" placeholder="Your Name">
+<textarea id="commentText" placeholder="Write your review"></textarea>
+<button class="btn" onclick="addComment()">Submit</button>
+
+<div id="commentList"></div>
+</div>
+
+<script>
+
+let API_URL = "https://script.google.com/macros/s/AKfycbwvUdn4OSiFy3JeJWPfM8ah_V6T3hBCl6nFxyEqy4ASn4F_9BucnH1CB8oSvadgrd1f/exec";
+
+let params = new URLSearchParams(window.location.search);
+let productName = params.get("name");
+
+/* LOAD PRODUCT */
+async function loadProduct(){
+
+let res = await fetch(API_URL + "?type=details");
+let data = await res.json();
+
+let product = data.find(p => p[0] === productName);
+
+if(product){
+document.getElementById("productName").innerText = product[0];
+document.getElementById("productPrice").innerText = product[2];
+document.getElementById("productImg").src = product[3];
+document.querySelector(".desc").innerText = product[1];
+}
+
+}
+
+loadProduct();
+
+/* ADD TO CART + TRACK */
+function addToCart(){
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+cart.push(productName);
+localStorage.setItem("cart", JSON.stringify(cart));
+
+fetch(API_URL + "?type=cart", {
+method:"POST",
+body: JSON.stringify({product: productName})
+});
+
+alert("Added to cart 🛒");
+}
+
+/* ADD COMMENT */
+async function addComment(){
+
+let name = document.getElementById("userName").value.trim();
+let comment = document.getElementById("commentText").value.trim();
+
+if(!name || !comment){
+alert("Fill all fields ⚠️");
+return;
+}
+
+await fetch(API_URL + "?type=comment", {
+method:"POST",
+body: JSON.stringify({
+product: productName,
+name: name,
+comment: comment
+})
+});
+
+alert("Comment Added ✅");
+
+document.getElementById("userName").value="";
+document.getElementById("commentText").value="";
+
+loadComments();
+}
+
+/* LOAD COMMENTS */
+async function loadComments(){
+
+let res = await fetch(API_URL + "?type=comments");
+let data = await res.json();
+
+let list = document.getElementById("commentList");
+list.innerHTML = "";
+
+data.forEach(c=>{
+if(c[0] === productName){
+list.innerHTML += `
+<div class="comment-box">
+<strong>${c[1]}</strong>
+<p>${c[2]}</p>
+</div>
+`;
+}
+});
+
+}
+
+loadComments();
+
+</script>
+
+</body>
+</html>

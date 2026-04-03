@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact - Astitv</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{
+background:#0a0a0a;
+color:white;
+}
+
+/* NAVBAR */
+header{
+display:flex;
+justify-content:space-between;
+padding:15px 50px;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
+}
+
+header h2{color:gold;}
+
+nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+}
+
+/* HERO */
+.hero{
+height:50vh;
+background:url('https://images.unsplash.com/photo-1521791136064-7986c2920216') center/cover;
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+}
+
+.hero::before{
+content:'';
+position:absolute;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+}
+
+.hero h1{
+position:relative;
+font-size:50px;
+}
+
+/* CONTAINER */
+.container{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+padding:50px;
+}
+
+/* INFO */
+.info{
+background:rgba(255,255,255,0.05);
+padding:30px;
+border-radius:20px;
+}
+
+.info h2{
+color:gold;
+margin-bottom:15px;
+}
+
+.info p{
+margin:10px 0;
+opacity:0.8;
+}
+
+/* FORM */
+.form{
+background:rgba(255,255,255,0.05);
+padding:30px;
+border-radius:20px;
+}
+
+.form input, .form textarea{
+width:100%;
+margin:10px 0;
+padding:12px;
+border:none;
+border-radius:10px;
+outline:none;
+}
+
+/* BUTTON */
+.btn{
+width:100%;
+padding:15px;
+background:gold;
+border:none;
+border-radius:30px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+.btn:hover{
+transform:scale(1.05);
+box-shadow:0 0 20px gold;
+}
+
+/* MAP */
+.map{
+padding:50px;
+}
+
+iframe{
+width:100%;
+height:300px;
+border-radius:20px;
+border:none;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h2>ASTITV</h2>
+<nav>
+<a href="index.html">Home</a>
+<a href="products.html">Products</a>
+<a href="cart.html" style="position:relative;">Cart
+  <span id="cartCount" 
+        style="position:absolute; top:-8px; right:-8px; background:gold; color:black; 
+               font-size:12px; font-weight:bold; padding:2px 6px; border-radius:50%; min-width:18px; text-align:center;">
+    0
+  </span>
+</a>
+</nav>
+</header>
+
+<section class="hero">
+<h1>Contact Us</h1>
+</section>
+
+<div class="container">
+
+<!-- INFO -->
+<div class="info">
+<h2>Get in Touch</h2>
+<p>📞 Phone: 9259623139</p>
+<p>📧 Email: astitvdecor@gmail.com</p>
+<p>📍 Location: Moradabad, India</p>
+</div>
+
+<!-- FORM -->
+<div class="form">
+<h2>Send Message</h2>
+<input id="name" placeholder="Your Name">
+<input id="email" placeholder="Your Email">
+<textarea id="message" placeholder="Your Message"></textarea>
+<button class="btn" onclick="sendMsg()">Send Message</button>
+</div>
+
+</div>
+
+<!-- MAP -->
+<div class="map">
+<iframe src="https://maps.google.com/maps?q=moradabad&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+</div>
+
+<script>
+
+let API_URL = "https://script.google.com/macros/s/AKfycbwvUdn4OSiFy3JeJWPfM8ah_V6T3hBCl6nFxyEqy4ASn4F_9BucnH1CB8oSvadgrd1f/exec";
+
+
+// update badge
+function updateCartCount(){
+  let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  let cartCountElem = document.getElementById("cartCount");
+  if(cartCountElem){
+    cartCountElem.innerText = cartItems.length;
+    cartCountElem.style.display = cartItems.length > 0 ? "flex" : "none";
+  }
+}
+
+// call on page load
+updateCartCount();
+
+// call after adding product to cart
+function addToCart(product){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart.push(product);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount(); // update badge live
+  alert("Added to cart 🛒");
+  
+  // optional: send to Google Sheet
+  fetch("https://script.google.com/macros/s/AKfycbwvUdn4OSiFy3JeJWPfM8ah_V6T3hBCl6nFxyEqy4ASn4F_9BucnH1CB8oSvadgrd1f/exec?type=cart", {
+    method:"POST",
+    body: JSON.stringify({product: product})
+  });
+}
+
+/* SEND MESSAGE */
+async function sendMsg(){
+
+let name = document.getElementById("name").value.trim();
+let email = document.getElementById("email").value.trim();
+let message = document.getElementById("message").value.trim();
+
+/* VALIDATION */
+if(!name || !email || !message){
+alert("Please fill all fields ⚠️");
+return;
+}
+
+try{
+
+await fetch(API_URL + "?type=comment", {
+method:"POST",
+body: JSON.stringify({
+product: "Contact Form",
+name: name,
+comment: message + " (" + email + ")"
+})
+});
+
+}catch(e){
+console.log("Error", e);
+}
+
+alert("Message Sent Successfully ✅");
+
+/* RESET */
+document.getElementById("name").value="";
+document.getElementById("email").value="";
+document.getElementById("message").value="";
+
+}
+
+</script>
+
+</body>
+</html>

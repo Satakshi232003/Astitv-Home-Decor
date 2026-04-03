@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astitv Home Decor</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{
+background:#0a0a0a;
+color:white;
+overflow-x:hidden;
+}
+
+/* NAVBAR */
+header{
+position:fixed;
+width:100%;
+top:0;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 50px;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
+z-index:1000;
+}
+
+header h2{
+color:gold;
+letter-spacing:2px;
+}
+
+nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+position:relative;
+}
+
+nav a::after{
+content:''; position:absolute; width:0; height:2px; background:gold; bottom:-5px; left:0; transition:0.3s;
+}
+
+nav a:hover::after{width:100%;}
+
+/* HERO */
+.hero{
+height:100vh;
+background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c') center/cover;
+display:flex; align-items:center; justify-content:center; text-align:center; position:relative;
+}
+
+.hero::before{
+content:''; position:absolute; width:100%; height:100%; background:linear-gradient(to bottom, rgba(0,0,0,0.6), #0a0a0a);
+}
+
+.hero-content{position:relative; z-index:2; animation:fadeUp 1.5s ease;}
+
+.hero h1{font-size:60px; margin-bottom:20px;}
+.hero p{font-size:18px; opacity:0.8; margin-bottom:20px;}
+
+.btn{
+padding:12px 30px; background:gold; border:none; cursor:pointer; font-weight:bold; border-radius:30px; transition:0.3s;
+}
+.btn:hover{transform:scale(1.1); box-shadow:0 0 20px gold;}
+
+/* PRODUCTS */
+.products{
+padding:100px 50px;
+display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:30px;
+}
+
+.card{
+background:rgba(255,255,255,0.05); backdrop-filter:blur(10px); border-radius:20px; overflow:hidden; transition:0.4s; position:relative;
+}
+
+.card:hover{transform:translateY(-10px) scale(1.03); box-shadow:0 0 30px rgba(255,215,0,0.3);}
+.card img{width:100%; height:250px; object-fit:cover;}
+.card-content{padding:20px;}
+.card h3{margin-bottom:10px;}
+.card button{width:100%; margin-top:10px;}
+
+/* ANIMATION */
+@keyframes fadeUp{0%{opacity:0; transform:translateY(50px);} 100%{opacity:1; transform:translateY(0);}}
+
+.reveal{opacity:0; transform:translateY(50px); transition:1s;}
+.reveal.active{opacity:1; transform:translateY(0);}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h2>ASTITV</h2>
+<nav>
+<a href="index.html">Home</a>
+<a href="products.html">Products</a>
+<a href="cart.html" style="position:relative;">Cart
+  <span id="cartCount" 
+        style="position:absolute; top:-8px; right:-8px; background:gold; color:black; 
+               font-size:12px; font-weight:bold; padding:2px 6px; border-radius:50%; min-width:18px; text-align:center;">
+    0
+  </span>
+</a>
+<a href="contact.html">Contact</a>
+<a href="about.html">about</a>
+</nav>
+</header>
+
+<section class="hero">
+<div class="hero-content">
+<h1>Luxury Brass Decor</h1>
+<p>Make your home shine with elegance</p>
+<a href="products.html"><button class="btn">Shop Now</button></a>
+</div>
+</section>
+
+<section class="products" id="productContainer">
+<!-- Dynamic products will load here -->
+</section>
+
+<!-- Modal for full product details -->
+<div id="detailModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);justify-content:center;align-items:center;z-index:2000;overflow:auto;padding:50px 20px;">
+  <div style="background:#111;color:white;border-radius:20px;max-width:800px;width:100%;padding:30px;position:relative;display:flex;flex-wrap:wrap;gap:20px;">
+    <span id="closeModal" style="position:absolute;top:15px;right:20px;font-size:30px;cursor:pointer;font-weight:bold;">&times;</span>
+
+    <!-- Left: Product Image -->
+    <div style="flex:1 1 300px;text-align:center;">
+      <img id="modalImage" src="" alt="" style="width:100%;border-radius:15px;object-fit:cover;"/>
+    </div>
+
+    <!-- Right: Product Info -->
+    <div style="flex:1 1 300px;display:flex;flex-direction:column;gap:15px;">
+      <h2 id="modalName" style="font-size:28px;color:gold;"></h2>
+      <p id="modalPrice" style="font-size:20px;font-weight:bold;">Price: </p>
+      <p id="modalCategory" style="font-size:16px;opacity:0.8;">Category: </p>
+      <hr style="border:1px solid gold;margin:10px 0;">
+      <h3 style="color:gold;margin-bottom:10px;">Full Details</h3>
+      <div id="modalDetails" style="max-height:400px;overflow-y:auto;line-height:1.6;padding-right:10px;"></div>
+      <button class="btn" style="margin-top:auto;" onclick="addToCart(document.getElementById('modalName').innerText)">Add to Cart</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+let API_URL = "https://script.google.com/macros/s/AKfycbwvUdn4OSiFy3JeJWPfM8ah_V6T3hBCl6nFxyEqy4ASn4F_9BucnH1CB8oSvadgrd1f/exec";
+
+/* LOAD PRODUCTS FROM SHEET */
+async function loadProducts(){
+  let res = await fetch(API_URL + "?type=products");
+  let data = await res.json();
+
+  let container = document.getElementById("productContainer");
+  container.innerHTML = "";
+
+  // ✅ Show all products from sheet dynamically
+  data.forEach(p=>{
+    container.innerHTML += `
+      <div class="card reveal">
+        <img src="${p[3]}">
+        <div class="card-content">
+          <h3>${p[0]}</h3>
+          <p>Category: ${p[2]}</p>
+          <p>Price: ₹${p[1]}</p>
+          <button class="btn" onclick='showDetailsDynamic(${JSON.stringify(p)})'>View Details</button>
+          <button class="btn" onclick="addToCart('${p[0]}')">Add to Cart</button>
+        </div>
+      </div>
+    `;
+  });
+  activateScroll();
+}
+
+/* ADD TO CART + TRACK */
+function updateCartCount(){
+    let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+    let cartCountElem = document.getElementById("cartCount");
+    if(cartCountElem) {
+        cartCountElem.innerText = cartItems.length;
+        // hide badge if cart is empty
+        cartCountElem.style.display = cartItems.length > 0 ? "flex" : "none";
+    }
+}
+
+// call this when page loads
+updateCartCount();
+
+// call this after adding item to cart
+function addToCart(product){
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.push(product);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount(); // 🔥 update the badge immediately
+    alert("Added to cart 🛒");
+}
+
+/* SCROLL ANIMATION */
+function activateScroll(){
+  let reveals=document.querySelectorAll(".reveal");
+  window.addEventListener("scroll",()=>{
+    reveals.forEach(el=>{
+      let windowHeight=window.innerHeight;
+      let elementTop=el.getBoundingClientRect().top;
+      if(elementTop < windowHeight - 100){
+        el.classList.add("active");
+      }
+    });
+  });
+}
+
+/* SHOW FULL DETAILS IN MODAL DYNAMICALLY */
+function showDetailsDynamic(productRow){
+  document.getElementById("modalName").innerText = productRow[0];
+  document.getElementById("modalImage").src = productRow[3];
+  document.getElementById("modalPrice").innerText = "Price: ₹" + productRow[1];
+  document.getElementById("modalCategory").innerText = "Category: " + productRow[2];
+
+  let detailsHtml = "";
+  for(let i=4; i<productRow.length; i++){
+    if(productRow[i] && productRow[i] != "") detailsHtml += `<p>${productRow[i]}</p>`;
+  }
+  document.getElementById("modalDetails").innerHTML = detailsHtml;
+
+  document.getElementById("detailModal").style.display = "flex";
+}
+
+/* CLOSE MODAL */
+document.getElementById("closeModal").onclick = function(){
+  document.getElementById("detailModal").style.display = "none";
+}
+
+/* CLOSE MODAL WHEN CLICKING OUTSIDE */
+window.onclick = function(e){
+  if(e.target == document.getElementById("detailModal")){
+    document.getElementById("detailModal").style.display = "none";
+  }
+}
+
+/* INIT */
+loadProducts();
+
+</script>
+
+</body>
+</html>

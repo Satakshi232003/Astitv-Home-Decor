@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About - Astitv</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{
+background:#0a0a0a;
+color:white;
+overflow-x:hidden;
+}
+
+/* NAVBAR */
+header{
+position:fixed;
+width:100%;
+top:0;
+display:flex;
+justify-content:space-between;
+padding:15px 50px;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
+z-index:1000;
+}
+
+header h2{color:gold;}
+nav a{
+color:white;margin:0 15px;text-decoration:none;
+}
+
+/* HERO */
+.hero{
+height:60vh;
+background:url('https://images.unsplash.com/photo-1493666438817-866a91353ca9') center/cover;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+position:relative;
+}
+
+.hero::before{
+content:'';
+position:absolute;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+}
+
+.hero h1{
+position:relative;
+font-size:50px;
+z-index:2;
+}
+
+/* ABOUT */
+.about{
+padding:100px 50px;
+text-align:center;
+}
+
+.about p{
+max-width:800px;
+margin:auto;
+line-height:1.7;
+opacity:0.8;
+}
+
+/* STATS */
+.stats{
+display:flex;
+justify-content:center;
+gap:50px;
+padding:50px;
+}
+
+.stat{
+text-align:center;
+}
+
+.stat h2{
+color:gold;
+font-size:40px;
+}
+
+/* TEAM */
+.team{
+padding:80px 50px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:30px;
+}
+
+.member{
+background:rgba(255,255,255,0.05);
+padding:20px;
+border-radius:20px;
+text-align:center;
+transition:0.3s;
+}
+
+.member:hover{
+transform:translateY(-10px);
+box-shadow:0 0 20px gold;
+}
+
+.member img{
+width:100%;
+border-radius:15px;
+margin-bottom:10px;
+}
+
+/* ANIMATION */
+.reveal{
+opacity:0;
+transform:translateY(50px);
+transition:1s;
+}
+
+.reveal.active{
+opacity:1;
+transform:translateY(0);
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h2>ASTITV</h2>
+<nav>
+<a href="index.html">Home</a>
+<a href="products.html">Products</a>
+<a href="contact.html">Contact</a>
+</nav>
+</header>
+
+<section class="hero">
+<h1>About Our Brand</h1>
+</section>
+
+<section class="about reveal">
+<h2>Who We Are</h2>
+<p>
+Astitv is a luxury home decor brand specializing in premium brass products.
+We blend tradition with modern elegance to create timeless pieces that elevate your living space.
+</p>
+</section>
+
+<section class="stats reveal">
+<div class="stat">
+<h2>500+</h2>
+<p>Products</p>
+</div>
+<div class="stat">
+<h2>200+</h2>
+<p>Clients</p>
+</div>
+<div class="stat">
+<h2>5★</h2>
+<p>Rating</p>
+</div>
+</section>
+
+<section class="team">
+
+<div class="member reveal">
+<img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e">
+<h3>Founder</h3>
+<p>Creative Head</p>
+</div>
+
+<div class="member reveal">
+<img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2">
+<h3>Designer</h3>
+<p>Product Designer</p>
+</div>
+
+<div class="member reveal">
+<img src="https://images.unsplash.com/photo-1552058544-f2b08422138a">
+<h3>Marketing</h3>
+<p>Marketing Lead</p>
+</div>
+
+</section>
+
+<script>
+
+/* SCROLL ANIMATION */
+window.addEventListener("scroll",()=>{
+let reveals=document.querySelectorAll(".reveal");
+
+reveals.forEach(el=>{
+let windowHeight=window.innerHeight;
+let elementTop=el.getBoundingClientRect().top;
+
+if(elementTop < windowHeight - 100){
+el.classList.add("active");
+}
+});
+});
+
+</script>
+
+</body>
+</html>
