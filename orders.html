@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Orders</title>
+</head>
+<body style="font-family:sans-serif; padding:30px;">
+
+<h2>My Orders 🛍️</h2>
+
+<div id="ordersContainer"></div>
+
+<script>
+let orders = JSON.parse(localStorage.getItem("cart")) || [];
+
+let container = document.getElementById("ordersContainer");
+
+if(orders.length === 0){
+  container.innerHTML = "<p>No orders yet 😢</p>";
+}else{
+  orders.forEach(o=>{
+    container.innerHTML += `<p>✅ ${o}</p>`;
+  });
+}
+</script>
+
+</body>
+</html>

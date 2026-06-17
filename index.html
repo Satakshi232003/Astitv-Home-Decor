@@ -16,6 +16,58 @@ color:white;
 overflow-x:hidden;
 }
 
+
+.modal-slide{
+  object-fit:contain;
+  background:#000;
+}
+
+
+
+.product-slide,
+.latest-card img,
+.card img{
+  width:100%;
+  height:100%;              /* consistent height */
+  object-fit:contain;        /* 🔥 no crop */
+  background:#0a0a0a;        /* empty space clean lage */
+}
+
+/* MOBILE HEADER */
+@media(max-width:768px){
+
+  header{
+    padding:10px 15px !important;
+  }
+
+  header > div{
+    flex-direction:column;
+    gap:10px;
+    align-items:flex-start;
+  }
+
+  /* search full width */
+  #searchInput{
+    width:100% !important;
+  }
+
+  /* right menu wrap */
+  header div[style*="gap:20px"]{
+    width:100%;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  /* category scroll */
+  .category-bar{
+    overflow-x:auto;
+    gap:15px;
+    font-size:13px;
+  }
+
+}
+
 /* NAVBAR */
 header{
 position:fixed;
@@ -50,6 +102,7 @@ nav a:hover::after{width:100%;}
 
 /* HERO */
 .hero{
+margin-top:120px;
 height:100vh;
 background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c') center/cover;
 display:flex; align-items:center; justify-content:center; text-align:center; position:relative;
@@ -71,16 +124,51 @@ padding:12px 30px; background:gold; border:none; cursor:pointer; font-weight:bol
 
 /* PRODUCTS */
 .products{
-padding:100px 50px;
-display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:30px;
+  display:flex;
+  gap:20px;
+  overflow-x:auto;
+  padding:20px;
+  scroll-behavior:smooth;
 }
 
+.products::-webkit-scrollbar{
+  display:none;
+}
+/* responsive */
+@media(max-width:1000px){
+  .products{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:600px){
+  .products{
+    grid-template-columns:repeat(1,1fr);
+  }
+}
+.product-slide{
+   /* 🔥 instead of cover */
+background:black;     /* optional - empty space clean lagega */
+}
 .card{
-background:rgba(255,255,255,0.05); backdrop-filter:blur(10px); border-radius:20px; overflow:hidden; transition:0.4s; position:relative;
+  min-width:250px;
+  max-width:250px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(10px);
+  border-radius:15px;
+  overflow:hidden;
+  transition:0.3s;
+}
+.card img{
+  width:100%;
+  height:220px;
+  object-fit:contain;   /* ✅ no crop */
+  background:#0a0a0a;
+}.card:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 20px rgba(255,215,0,0.2);
 }
 
-.card:hover{transform:translateY(-10px) scale(1.03); box-shadow:0 0 30px rgba(255,215,0,0.3);}
-.card img{width:100%; height:250px; object-fit:cover;}
 .card-content{padding:20px;}
 .card h3{margin-bottom:10px;}
 .card button{width:100%; margin-top:10px;}
@@ -90,37 +178,1607 @@ background:rgba(255,255,255,0.05); backdrop-filter:blur(10px); border-radius:20p
 
 .reveal{opacity:0; transform:translateY(50px); transition:1s;}
 .reveal.active{opacity:1; transform:translateY(0);}
+
+.slider{
+position:relative;
+width:100%;          /* ✅ full width */
+height:300px;        /* 🔥 height control (patla banner) */
+overflow:hidden;
+margin-top:120px;    /* header ke niche spacing */
+}
+
+.slide{
+position:absolute;
+width:100%;
+height:100%;
+opacity:0;
+transition:1s;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+background-size:cover;
+background-position:center;
+}
+.slide.active{
+opacity:1;
+z-index:1;
+}
+
+.category-bar{
+display:flex;
+gap:25px;
+margin-top:10px;
+font-size:14px;
+overflow-x:auto;
+position:relative;
+}
+
+.cat{
+cursor:pointer;
+padding:10px;
+}
+
+.mega-menu{
+position:absolute;
+top:90px;
+left:0;
+width:100%;
+background:#f5f5f5;
+color:black;
+display:none;
+padding:20px;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+z-index:999;
+}
+
+.mega-menu h4{
+color:#d10073;
+margin-bottom:10px;
+}
+
+.mega-menu p{
+margin:5px 0;
+cursor:pointer;
+}
+
+.profile-box{
+position:relative;
+}
+
+.profile-menu{
+position:absolute;
+top:35px;
+right:0;
+width:220px;
+background:white;
+color:black;
+padding:15px;
+border-radius:10px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+
+opacity:0;
+visibility:hidden;
+transform:translateY(10px);
+transition:0.3s;
+z-index:2000;
+}
+
+/* 🔥 HOVER MAGIC */
+.profile-box:hover .profile-menu{
+opacity:1;
+visibility:visible;
+transform:translateY(0);
+}
+.profile-menu h3{
+margin-bottom:5px;
+}
+
+.signup-btn{
+width:100%;
+padding:10px;
+background:#d10073;
+color:white;
+border:none;
+border-radius:5px;
+margin:10px 0;
+cursor:pointer;
+}
+
+.profile-menu p{
+margin:10px 0;
+cursor:pointer;
+}
+
+/* 🔥 PRODUCT SLIDER */
+.product-slider{
+  width:100%;
+  height:220px;  
+    /* ✅ perfect square */
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.product-slide{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;  /* ✅ keep this */
+  background:#0a0a0a;
+  opacity:0;
+  transition:0.5s;
+}
+.product-slide.active{opacity:1;}
+
+
+
+/* modal slider fix */
+#modalSlider{
+  position:relative;
+  width:100%;
+  height:300px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.modal-slide{
+  position:absolute;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  opacity:0;
+  transition:0.5s;
+}
+
+.modal-slide.active{
+  opacity:1;
+}
+/* DOTS */
+.ps-dots{
+  position:absolute;
+  bottom:10px;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  z-index:3;
+}
+
+.ps-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#ccc;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.ps-dot.active{
+  background:gold;
+  transform:scale(1.2);
+}
+
+/* 🔥 MODAL IMAGE PERFECT CENTER */
+#detailModal img,
+.modal-slide{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  margin:auto;
+}
+
+/* slider images overlap fix */
+.modal-slide{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+   border-radius:15px;
+}
+
+.star{
+  font-size:25px;
+  cursor:pointer;
+  color:#ccc;
+  transition:0.3s;
+}
+
+.star.active{
+  color:gold;
+  transform:scale(1.2);
+}
+
+/* 🔥 SLIDER STYLE */
+/* 🔥 REVIEW CONTAINER FIX (NO GRID, ONLY SLIDER) */
+/* ===============================
+   🔥 REVIEW SLIDER FIX (FULL MOBILE SWIPE)
+================================ */
+/* ===============================
+   🔥 UNIVERSAL HORIZONTAL SLIDER FIX
+================================ */
+
+.combo-container,
+.latest-container,
+#reviewContainer{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+
+  -webkit-overflow-scrolling:touch;
+
+  gap:20px;
+
+  padding:15px 10px;
+
+  width:100%;
+  max-width:100%;
+
+  scroll-behavior:smooth;
+}
+#reviewContainer{
+  width:100%;
+  max-width:1100px;   /* 🔥 center limit */
+  margin:0 auto;      /* 🔥 center */
+  justify-content:flex-start;
+}
+
+/* hide scrollbar */
+.combo-container::-webkit-scrollbar,
+.latest-container::-webkit-scrollbar{
+  display:none;
+}
+
+/* cards MUST not shrink */
+.combo-container .card,
+.latest-container .card{
+  flex:0 0 auto !important;
+  width:250px;
+  min-width:250px;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .combo-container .card,
+  .latest-container .card{
+    width:80%;
+    min-width:80%;
+  }
+}
+
+/* cards universal */
+.card,
+.latest-card,
+.review-card{
+  flex:0 0 auto;
+  scroll-snap-align:center;
+}
+
+/* desktop size */
+.card,
+.latest-card{
+  width:250px;
+  max-width:250px;
+}
+
+/* review size desktop */
+.review-card{
+  width:300px;
+  max-width:300px;
+}
+
+/* ===============================
+   🔥 MOBILE PERFECT VIEW
+================================ */
+@media(max-width:768px){
+
+  .card,
+  .latest-card{
+    width:80%;
+    max-width:80%;
+  }
+
+  .review-card{
+    width:85%;
+    max-width:85%;
+  }
+
+  .combo-container,
+  .latest-container,
+  #reviewContainer{
+    padding:10px;
+    gap:15px;
+  }
+}
+#reviewContainer{
+  display:flex;
+  gap:20px;
+  overflow-x:auto;
+  scroll-behavior:smooth;
+  padding:20px 15px;
+
+  width:100%;
+  justify-content:flex-start;   /* important */
+  scroll-snap-type:x mandatory; /* smooth snap */
+}
+
+/* hide scrollbar */
+#reviewContainer::-webkit-scrollbar{
+  display:none;
+}
+.review-card{
+  transition:transform 0.3s;
+}
+
+.review-card:active{
+  transform:scale(0.98);
+}
+/* review card fix */
+.review-card{
+  flex:0 0 auto;
+  width:300px;        /* desktop */
+  max-width:300px;
+
+  scroll-snap-align:center;
+}
+
+/* MOBILE PERFECT */
+@media(max-width:768px){
+
+  #reviewContainer{
+    padding:15px 10px;
+    gap:15px;
+  }
+
+  .review-card{
+    width:85%;      /* 🔥 important: full visible card */
+    max-width:85%;
+  }
+}
+/* 🔥 REVIEW CARD PERFECT UI */
+.review-card{
+  min-width:300px;
+  max-width:300px;
+  flex:0 0 auto;
+
+  background:#111;
+  padding:22px;
+  border-radius:18px;
+  transition:0.3s;
+
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow:0 10px 25px rgba(0,0,0,0.6);
+
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* TOP USER */
+.review-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+/* AVATAR */
+.review-avatar{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ff4da6,#d10073);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  color:white;
+}
+
+/* NAME */
+.review-name{
+  font-weight:600;
+  font-size:15px;
+}
+
+/* VERIFIED */
+.verified{
+  font-size:11px;
+  color:#00ffae;
+}
+
+/* STARS */
+.review-stars{
+  color:gold;
+  font-size:14px;
+}
+
+/* TEXT */
+.review-text{
+  font-size:14px;
+  color:#ccc;
+  line-height:1.5;
+}
+
+/* HOVER */
+.review-card:hover{
+  transform:translateY(-5px) scale(1.02);
+  box-shadow:0 15px 35px rgba(255,215,0,0.15);
+}
+
+/* 🔥 SECTION FIX */
+.review-section{
+  width:100%;
+  padding:70px 15px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* TITLE */
+.review-title{
+  font-size:30px;
+  margin-bottom:25px;
+  text-align:center;
+}
+
+/* BUTTON AREA */
+.review-actions{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:15px;
+  margin-top:30px;
+  flex-wrap:wrap;
+}
+
+/* 🔥 MOBILE FIX */
+@media(max-width:600px){
+  .review-card{
+    min-width:260px;
+    max-width:260px;
+  }
+
+  .review-title{
+    font-size:22px;
+  }
+}
+/* FORM */
+.review-form{
+  display:none;
+  width:100%;
+  max-width:600px;
+  background:#111;
+  padding:20px;
+  border-radius:15px;
+  margin-bottom:30px;
+}
+
+.review-form input,
+.review-form textarea{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:5px;
+  border:none;
+}
+
+/* BUTTON ALIGNMENT */
+.review-actions{
+  display:flex;
+  gap:15px;
+  margin-top:30px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+/* 🔥 REVIEW GRID CENTER */
+/* MOBILE */
+@media(max-width:600px){
+  #reviewContainer{
+    grid-template-columns:1fr;
+  }
+
+
+  .review-title{
+    font-size:24px;
+  }
+
+  .review-section{
+    padding:60px 15px;
+  }
+}
+
+.whatsapp-connect{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  margin:30px 0;
+}
+
+.whatsapp-connect a{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:linear-gradient(135deg,#25D366,#128C7E);
+  color:white;
+  padding:14px 28px;
+  border-radius:40px;
+  font-weight:600;
+  text-decoration:none;
+  font-size:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.4);
+  transition:0.3s;
+}
+
+/* hover effect */
+.whatsapp-connect a:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 25px rgba(37,211,102,0.6);
+}
+@media(min-width:1200px){
+  .card img,
+  .latest-card img{
+    height:260px;
+  }
+}
+#modalImage{
+  width:100%;
+  height:100%;
+  object-fit:contain;   /* ✅ fix */
+}
+
+/* mobile */
+@media(max-width:600px){
+  .whatsapp-connect a{
+    font-size:14px;
+    padding:12px 20px;
+  }
+}
+.whatsapp-float{
+  position:fixed;
+  bottom:25px;
+  right:25px;
+  width:60px;
+  height:60px;
+  z-index:9999;
+  border-radius:50%;
+  background:#25D366;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 8px 25px rgba(0,0,0,0.4);
+  transition:0.3s;
+  animation:floatPulse 2s infinite;
+}
+
+.whatsapp-float img{
+  width:35px;
+  height:35px;
+}
+
+/* hover effect */
+.whatsapp-float:hover{
+  transform:scale(1.15);
+  box-shadow:0 0 25px rgba(37,211,102,0.7);
+}
+
+/* pulse animation */
+@keyframes floatPulse{
+  0%{box-shadow:0 0 0 0 rgba(37,211,102,0.6);}
+  70%{box-shadow:0 0 0 15px rgba(37,211,102,0);}
+  100%{box-shadow:0 0 0 0 rgba(37,211,102,0);}
+}
+
+/* mobile adjust */
+@media(max-width:600px){
+  .whatsapp-float{
+    width:55px;
+    height:55px;
+    bottom:20px;
+    right:20px;
+  }
+
+  .whatsapp-float img{
+    width:30px;
+    height:30px;
+  }
+}
+
+/* 🔥 LATEST SECTION */
+.latest-section{
+  width:100%;
+  padding:60px 20px 20px;
+}
+
+.latest-title{
+  text-align:center;
+  font-size:28px;
+  margin-bottom:30px;
+}
+
+/* horizontal slider */
+.latest-container{
+  display:flex;
+  gap:20px;
+  overflow-x:auto;
+  padding:10px 5px;
+  scroll-behavior:smooth;
+}
+
+.latest-container::-webkit-scrollbar{
+  display:none;
+}
+
+/* cards same style */
+.latest-card{
+  min-width:250px;
+  max-width:250px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(10px);
+  border-radius:15px;
+  overflow:hidden;
+  transition:0.3s;
+}
+
+.latest-card img{
+  width:100%;
+  height:220px;
+  object-fit:contain;  /* ✅ perfect fit */
+  background:#0a0a0a;
+}
+.latest-card .card-content{
+  padding:15px;
+}
+
+.latest-card:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 20px rgba(255,215,0,0.2);
+}
+
+/* mobile */
+@media(max-width:600px){
+  .latest-card{
+    min-width:200px;
+  }
+}
+.section-title{
+  text-align:center;
+  font-size:30px;
+  margin-top:40px;
+  margin-bottom:10px;
+  position:relative;
+}
+
+.section-title::after{
+  content:'';
+  width:80px;
+  height:3px;
+  background:gold;
+  display:block;
+  margin:10px auto 0;
+  border-radius:10px;
+}
+.new-badge{
+  position:absolute;
+  top:10px;
+  left:10px;
+  background:#00ffae;
+  color:rgb(30, 29, 29);
+  padding:5px 10px;
+  font-size:12px;
+  border-radius:20px;
+  font-weight:bold;
+  animation:blink 1s infinite;
+}
+/* 🔥 NEW LAYOUT (LEFT PRODUCTS + RIGHT FORM) */
+
+
+
+/* LEFT SIDE CONTAINER FIX */
+.combo-left{
+  display:flex;
+  flex-direction:column;
+  gap:40px;
+  width:100%;
+}
+.combo-section{
+  grid-template-columns: 1.3fr 1fr;
+}
+
+/* EACH BLOCK CLEAN */
+.combo-row{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+}
+
+
+.combo-title{
+  font-size:24px;
+  margin-bottom:15px;
+  text-align:left;
+}
+
+/* 🔥 HORIZONTAL ROW (LATEST + OFFERS SAME STYLE) */
+.combo-section{
+  display:grid;
+  grid-template-columns: 1fr 380px; /* LEFT BIG + RIGHT FORM */
+  gap:30px;
+  padding:40px;
+  align-items:start;
+}
+.connect-box h2{
+  font-size:22px;
+  font-weight:700;
+  margin-bottom:5px;
+  color:gold;
+}
+
+.connect-sub{
+  font-size:13px;
+  opacity:0.7;
+  margin-bottom:20px;
+}
+
+.combo-container{
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;   /* 🔥 ek line me sab */
+  gap:20px;
+
+  overflow-x:auto;
+  scroll-behavior:smooth;
+  padding:10px 5px;
+}
+
+/* scrollbar hide */
+.combo-container::-webkit-scrollbar{
+  display:none;
+}
+
+/* cards fixed width */
+.combo-container .card,
+.combo-container .latest-card{
+  min-width:250px;
+  max-width:250px;
+  flex:0 0 auto;
+}
+/* 🔥 RIGHT SIDE FORM FIX (TOP ALIGN) */
+.connect-box{
+  position:sticky;
+  top:110px;
+
+  width:100%;
+  max-width:450px;   /* 🔥 thoda bada */
+  padding:30px;
+
+  background:linear-gradient(145deg,#141414,#0b0b0b);
+  border:1px solid rgba(255,215,0,0.2);
+
+  border-radius:22px;
+
+  box-shadow:0 20px 60px rgba(0,0,0,0.75);
+
+  align-self:start;   /* 🔥 thoda center feel */
+  margin:auto;
+
+  transition:0.3s ease;
+}
+
+/* hover premium lift */
+.connect-box:hover{
+  transform:translateY(-8px);
+  box-shadow:0 25px 80px rgba(255,215,0,0.12);
+}
+
+/* title upgrade */
+.connect-box h2{
+  font-size:30px;
+  letter-spacing:0.5px;
+  text-align:center;
+}
+
+/* subtitle */
+.connect-sub{
+  text-align:center;
+  font-size:13px;
+  opacity:0.7;
+  margin-bottom:25px;
+}
+
+/* inputs spacing better */
+.input-group{
+  margin-bottom:18px;
+}
+
+/* button premium glow */
+.connect-btn{
+  margin-top:10px;
+  background:linear-gradient(135deg,#ff4da6,#d10073);
+  box-shadow:0 10px 25px rgba(209,0,115,0.25);
+}
+/* 🔥 MOBILE FIX */
+
+.connect-box.active{
+  opacity:1;
+  transform:translateY(0);
+}
+
+@media(max-width:900px){
+  .connect-box{
+    position:static;
+  }
+}
+/* hover lift */
+.connect-box:hover{
+  transform:translateY(-5px);
+  box-shadow:0 20px 60px rgba(255,215,0,0.15);
+}
+
+/* TITLE */
+.connect-box h2{
+  font-size:28px;
+  font-weight:700;
+  margin-bottom:5px;
+  letter-spacing:0.5px;
+}
+
+.connect-sub{
+  font-size:14px;
+  opacity:0.7;
+  margin-bottom:25px;
+}
+
+/* INPUT GROUP */
+.input-group{
+  position:relative;
+  margin-bottom:22px;
+}
+
+/* INPUTS */
+.input-group input,
+.input-group textarea{
+  width:100%;
+  padding:16px 14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.08);
+  background:#0f0f0f;
+  color:white;
+  font-size:15px;
+  font-weight:500;
+  outline:none;
+  transition:0.3s;
+}
+
+/* FOCUS ANIMATION */
+.input-group input:focus,
+.input-group textarea:focus{
+  border-color:gold;
+  box-shadow:0 0 15px rgba(255,215,0,0.25);
+  transform:scale(1.02);
+}
+
+/* FLOAT LABEL */
+.input-group label{
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  background:#111;
+  padding:0 6px;
+  font-size:13px;
+  color:#aaa;
+  pointer-events:none;
+  transition:0.3s;
+}
+
+/* FLOAT EFFECT */
+.input-group input:focus + label,
+.input-group textarea:focus + label,
+.input-group input:not(:placeholder-shown) + label,
+.input-group textarea:not(:placeholder-shown) + label{
+  top:-8px;
+  font-size:11px;
+  color:gold;
+}
+
+/* TEXTAREA */
+.input-group textarea{
+  height:110px;
+  resize:none;
+}
+
+/* BUTTON */
+.connect-btn{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:40px;
+  background:linear-gradient(135deg,#ff4da6,#d10073);
+  color:white;
+  font-weight:700;
+  font-size:16px;
+  letter-spacing:0.5px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+/* BUTTON HOVER */
+.connect-btn:hover{
+  transform:scale(1.06);
+  box-shadow:0 0 25px rgba(255,77,166,0.6);
+}
+
+/* CLICK EFFECT */
+.connect-btn:active{
+  transform:scale(0.97);
+}
+
+/* NOTE */
+.connect-note{
+  font-size:12px;
+  opacity:0.6;
+  margin-top:12px;
+  text-align:center;
+}
+/* MOBILE */
+
+
+.write-review-btn{
+  padding:12px 28px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(135deg,#ff4da6,#d10073);
+  color:white;
+  font-weight:600;
+  font-size:15px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.write-review-btn:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 20px rgba(255,77,166,0.6);
+}
+ 
+
+/* ===============================
+   🔥 GLOBAL RESPONSIVE FIX
+================================ */
+
+/* prevent horizontal overflow */
+html, body{
+  width:100%;
+  overflow-x:hidden;
+}
+
+/* images always safe */
+img{
+  max-width:100%;
+  height:auto;
+}
+
+/* SECTION PADDING FIX */
+section{
+  width:100%;
+  padding-left:15px;
+  padding-right:15px;
+}
+
+/* ===============================
+   🔥 HEADER RESPONSIVE FIX
+================================ */
+
+
+/* ===============================
+   🔥 HERO RESPONSIVE
+================================ */
+@media(max-width:768px){
+  .hero h1{
+    font-size:32px;
+  }
+
+  .hero p{
+    font-size:14px;
+  }
+
+  .hero{
+    height:70vh;
+    padding:20px;
+  }
+}
+
+/* ===============================
+   🔥 PRODUCT GRID / SLIDER FIX
+================================ */
+
+
+@media(max-width:600px){
+
+  .card,
+  .latest-card{
+    min-width:180px;
+    max-width:180px;
+  }
+
+  .product-slider{
+    height:180px;
+  }
+}
+
+/* ===============================
+   🔥 COMBO SECTION FIX
+================================ */
+
+/* ===============================
+   🔥 REVIEW SECTION FIX
+================================ */
+@media(max-width:768px){
+
+  .review-card{
+    min-width:260px;
+    max-width:260px;
+  }
+
+  #reviewContainer{
+    justify-content:flex-start;
+  }
+}
+
+/* ===============================
+   🔥 MODAL FIX MOBILE
+================================ */
+@media(max-width:768px){
+
+  #detailModal > div{
+    flex-direction:column;
+    padding:20px;
+  }
+
+  #modalImage{
+    height:200px;
+  }
+}
+
+/* ===============================
+   🔥 TEXT SCALING FIX
+================================ */
+@media(max-width:600px){
+
+  h1{ font-size:28px !important; }
+  h2{ font-size:20px !important; }
+  h3{ font-size:16px !important; }
+
+  .btn{
+    padding:10px 18px;
+    font-size:13px;
+  }
+}
+
+#latestContainer,
+#offerContainer{
+  display:flex;
+  flex-wrap:nowrap;
+  overflow-x:auto;
+  gap:20px;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+}
+
+#latestContainer::-webkit-scrollbar,
+#offerContainer::-webkit-scrollbar{
+  display:none;
+}
+
+/*
+/* 🔥 CONNECT POPUP */
+.connect-popup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.7);
+
+  display:none;
+  justify-content:center;
+  align-items:center;
+
+  z-index:99999;
+  padding:20px;
+}
+
+.connect-popup.active{
+  display:flex;
+}
+
+/* close button */
+.connect-close{
+  position:absolute;
+  top:15px;
+  right:15px;
+
+  width:40px;
+  height:40px;
+
+  border-radius:50%;
+  background:#d10073;
+  color:white;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  cursor:pointer;
+  font-size:24px;
+  font-weight:bold;
+}
+
+/* floating icon */
+.connect-float{
+  position:fixed;
+  bottom:100px;
+  right:25px;
+
+  width:60px;
+  height:60px;
+
+  border-radius:50%;
+  background:linear-gradient(135deg,#ff4da6,#d10073);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:white;
+  font-size:28px;
+
+  cursor:pointer;
+  z-index:9999;
+
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* mobile */
+@media(max-width:600px){
+
+  .connect-float{
+    width:55px;
+    height:55px;
+    right:20px;
+    bottom:90px;
+  }
+
+}
+
+/* =================================
+   FINAL RESPONSIVE FIX
+================================= */
+
+/* GLOBAL */
+html,body{
+  width:100%;
+  overflow-x:hidden;
+}
+
+*{
+  max-width:100%;
+}
+
+/* HEADER */
+@media(max-width:768px){
+
+  header{
+    padding:10px 15px !important;
+  }
+
+  header > div{
+    flex-direction:column;
+    align-items:stretch !important;
+    gap:12px;
+  }
+
+  #searchInput{
+    width:100% !important;
+  }
+
+  header div[style*="gap:20px"]{
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+}
+
+/* HERO */
+@media(max-width:768px){
+
+  .slider{
+    height:60vh;
+    margin-top:140px;
+  }
+
+  .hero-content h1{
+    font-size:30px !important;
+  }
+
+  .hero-content h2{
+    font-size:18px !important;
+  }
+
+  .hero-content{
+    padding:20px;
+  }
+}
+
+/* TRUST BAR */
+@media(max-width:768px){
+
+  .trust-bar{
+    gap:15px !important;
+    font-size:13px;
+    padding:12px;
+    text-align:center;
+  }
+}
+
+/* PRODUCT CARDS */
+@media(max-width:768px){
+
+  .products,
+  .combo-container,
+  .latest-container,
+  #reviewContainer{
+    display:flex !important;
+    overflow-x:auto !important;
+    flex-wrap:nowrap !important;
+
+    gap:15px;
+    padding:10px;
+
+    scroll-snap-type:x mandatory;
+  }
+
+  .card,
+  .latest-card,
+  .review-card{
+    flex:0 0 auto !important;
+
+    width:85% !important;
+    min-width:85% !important;
+    max-width:85% !important;
+
+    scroll-snap-align:center;
+  }
+
+  .product-slider{
+    height:220px;
+  }
+
+  .card img,
+  .latest-card img{
+    height:220px;
+    object-fit:contain;
+  }
+}
+
+/* COMBO SECTION */
+
+/* =========================
+   TABLET + MOBILE RESPONSIVE
+========================= */
+@media(max-width:900px){
+
+  header{
+    padding:10px 15px !important;
+  }
+
+  header > div{
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  #searchInput{
+    width:100% !important;
+    margin-top:10px;
+  }
+
+  header div[style*="gap:20px"]{
+    width:100%;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  /* combo section */
+  .combo-section{
+    grid-template-columns:1fr !important;
+    padding:20px;
+  }
+
+  /* connect box */
+  .connect-box{
+    position:relative !important;
+    top:auto !important;
+    width:100%;
+    max-width:100%;
+    margin-top:20px;
+  }
+
+  /* sliders */
+  .products,
+  .combo-container,
+  .latest-container,
+  #latestContainer,
+  #offerContainer{
+    padding:10px;
+    gap:15px;
+
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory;
+  }
+
+  /* cards */
+  .card,
+  .latest-card{
+    flex:0 0 auto !important;
+
+    min-width:220px !important;
+    max-width:220px !important;
+
+    scroll-snap-align:center;
+  }
+
+  /* images */
+  .card img,
+  .latest-card img{
+    height:180px;
+  }
+
+}
+/* MODAL */
+@media(max-width:768px){
+
+  #detailModal > div{
+    flex-direction:column !important;
+    padding:15px !important;
+  }
+
+  #modalSlider{
+    height:220px !important;
+  }
+
+  #modalName{
+    font-size:22px !important;
+  }
+}
+
+/* BUTTONS */
+@media(max-width:600px){
+
+  .btn,
+  .connect-btn,
+  .write-review-btn{
+    width:100%;
+    font-size:14px;
+    padding:12px;
+  }
+}
+
+/* WHATSAPP FLOAT */
+@media(max-width:600px){
+
+  .whatsapp-float,
+  .connect-float{
+    width:52px;
+    height:52px;
+  }
+
+  .connect-float{
+    bottom:90px;
+  }
+}
+
+/* TEXT */
+@media(max-width:600px){
+
+  h1{
+    font-size:28px !important;
+  }
+
+  h2{
+    font-size:22px !important;
+  }
+
+  h3{
+    font-size:18px !important;
+  }
+
+  p{
+    font-size:14px;
+  }
+}
+
+
 </style>
 
 </head>
 
 <body>
 
-<header>
-<h2>ASTITV</h2>
-<nav>
-<a href="index.html">Home</a>
-<a href="products.html">Products</a>
-<a href="cart.html" style="position:relative;">Cart
-  <span id="cartCount" 
-        style="position:absolute; top:-8px; right:-8px; background:gold; color:black; 
-               font-size:12px; font-weight:bold; padding:2px 6px; border-radius:50%; min-width:18px; text-align:center;">
-    0
-  </span>
-</a>
-<a href="contact.html">Contact</a>
-<a href="about.html">about</a>
-</nav>
+<!-- MEESHO STYLE HEADER -->
+<header style="background:white; color:black; flex-direction:column; padding:10px 40px;">
+
+  <!-- TOP BAR -->
+  <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+    
+    <!-- LOGO -->
+    <h2 style="color:#d10073; font-weight:bold;">ASTITV</h2>
+
+    <!-- SEARCH -->
+   <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Try Brass Items or Search by Product Code"
+      style="width:40%; padding:10px; border-radius:5px; border:1px solid #ccc;">
+
+    <!-- RIGHT MENU -->
+    <div style="display:flex; gap:20px; align-items:center; font-size:14px;">
+      <span>Become a Supplier</span>
+      
+<a href="about.html" style="text-decoration:none; color:black;">ℹ️ About</a>
+<a href="contact.html" style="text-decoration:none; color:black;">📞 Contact</a>
+  <div class="profile-box">
+
+  <span id="profileBtn" style="cursor:pointer;">Profile</span>
+
+  <!-- DROPDOWN -->
+  <div id="profileMenu" class="profile-menu">
+    <h3>Hello User</h3>
+    <p style="font-size:12px; opacity:0.7;">To access your account</p>
+
+    <button class="signup-btn" onclick="openSignup()">Sign Up</button>
+
+    <hr>
+
+    <p>🛍️ My Orders</p>
+    <p>❌ Delete Account</p>
+  </div>
+
+</div>
+
+      <!-- CART -->
+      <a href="cart.html" style="position:relative; text-decoration:none; color:black;">
+        Cart
+        <span id="cartCount"
+          style="position:absolute; top:-8px; right:-10px; background:#d10073; color:white;
+          font-size:12px; padding:2px 6px; border-radius:50%;">
+          0
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <!-- CATEGORY BAR -->
+
+
+<!-- COMMON DROPDOWN -->
+<div id="megaMenu" class="mega-menu"></div>
+
 </header>
 
-<section class="hero">
-<div class="hero-content">
-<h1>Luxury Brass Decor</h1>
-<p>Make your home shine with elegance</p>
-<a href="products.html"><button class="btn">Shop Now</button></a>
-</div>
-</section>
+<div class="slider">
 
+  <div class="slide active" style="background:url('https://encyclocraftsapr.com/wp-content/uploads/2017/09/Fig-5.2-Optimized.jpg') center/cover;">
+    <div class="hero-content">
+      <h1>Luxury Brass Decor</h1>
+      <h2>Smart Shopping</h2>
+      <h2>Trusted by Millions</h2>
+      <button class="btn" onclick="window.location.href='products.html'">Shop Now</button>
+    </div>
+  </div>
+
+  <div class="slide" style="background:url('https://cdn.exoticindia.com/images/products/original/homeandliving/wsb022.jpg') center/cover;">
+    <div class="hero-content">
+      <h1>Elegant Home Style</h1>
+      <h2>Up to 50% OFF</h2>
+      <button class="btn" onclick="window.location.href='products.html'">Explore Now</button>
+    </div>
+  </div>
+
+  <div class="slide" style="background:url('https://cdn.apartmenttherapy.info/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_800,h_400/stock%2Fshutterstock_2388997603') center/cover;">
+    <div class="hero-content">
+      <h1>Premium Collection</h1>
+      <h2>New Arrivals</h2>
+      <button class="btn" onclick="window.location.href='products.html'">Shop Now</button>
+    </div>
+  </div> 
+
+</div>
+
+<!-- TRUST FEATURES BAR -->
+<div class="trust-bar" style="background:#111; color:white; display:flex; justify-content:center; gap:60px; padding:15px; flex-wrap:wrap; border-top:1px solid #333;">
+  <div>🛍️ 7 Days Easy Return</div>
+  <div>💵 Cash on Delivery</div>
+  <div>🏷️ Lowest Prices</div>
+
+</div>
+<section class="combo-section">
+
+  <!-- LEFT SIDE -->
+  <div class="combo-left">
+
+    <!-- LATEST -->
+    <div class="combo-row">
+      <h2 class="combo-title">🔥 Latest Products</h2>
+      <div class="combo-container" id="latestContainer"></div>
+    </div>
+
+    <!-- OFFERS -->
+    <div class="combo-row">
+      <h2 class="combo-title">⚡ Limited Offers</h2>
+      <div class="combo-container" id="offerContainer"></div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDE FORM -->
+<!-- CONNECT POPUP -->
+<div class="connect-popup" id="connectPopup">
+
+  <div class="connect-box">
+
+    <!-- CLOSE -->
+    <div class="connect-close" onclick="closeConnectForm()">
+      ×
+    </div>
+
+    <h2>📩 Connect With Us</h2>
+    <p class="connect-sub">Quick response guaranteed</p>
+
+    <div class="input-group">
+      <input type="text" id="cName" placeholder=" ">
+      <label>Name</label>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="cPhone" placeholder=" ">
+      <label>Phone Number</label>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="cAddress" placeholder=" ">
+      <label>Address</label>
+    </div>
+
+    <div class="input-group">
+      <textarea id="cMsg" placeholder=" "></textarea>
+      <label>Your Question</label>
+    </div>
+
+    <button class="connect-btn" onclick="submitContact()">
+      Submit
+    </button>
+
+    <p class="connect-note">We respect your privacy</p>
+
+  </div>
+
+</div>
+
+</section>
+<h2 class="section-title">✨ Our Products</h2>
 <section class="products" id="productContainer">
 <!-- Dynamic products will load here -->
 </section>
@@ -131,7 +1789,7 @@ background:rgba(255,255,255,0.05); backdrop-filter:blur(10px); border-radius:20p
     <span id="closeModal" style="position:absolute;top:15px;right:20px;font-size:30px;cursor:pointer;font-weight:bold;">&times;</span>
 
     <!-- Left: Product Image -->
-    <div style="flex:1 1 300px;text-align:center;">
+   <div style="flex:1 1 300px; display:flex; align-items:center; justify-content:center; height:300px; position:relative;">
       <img id="modalImage" src="" alt="" style="width:100%;border-radius:15px;object-fit:cover;"/>
     </div>
 
@@ -152,19 +1810,86 @@ background:rgba(255,255,255,0.05); backdrop-filter:blur(10px); border-radius:20p
 
 let API_URL = "https://script.google.com/macros/s/AKfycbwvUdn4OSiFy3JeJWPfM8ah_V6T3hBCl6nFxyEqy4ASn4F_9BucnH1CB8oSvadgrd1f/exec";
 
+const data = {
+  idols: `
+    <div><h4>God Idols</h4><p>Ganesh Ji</p><p>Laxmi Ji</p></div>
+    <div><h4>Decor</h4><p>Animal Idols</p></div>
+  `,
+  decor: `
+    <div><h4>Home</h4><p>Showpieces</p><p>Vases</p></div>
+  `,
+  kitchen: `
+    <div><h4>Kitchen</h4><p>Utensils</p><p>Storage</p></div>
+  `,
+  pooja: `
+    <div><h4>Pooja</h4><p>Diya</p><p>Agarbatti</p></div>
+  `,
+  gifts: `
+    <div><h4>Gifts</h4><p>Festival Gifts</p><p>Combos</p></div>
+  `
+};
+
+let menu = document.getElementById("megaMenu");
+
+document.querySelectorAll(".cat").forEach(item => {
+  item.addEventListener("mouseenter", () => {
+    let key = item.getAttribute("data-cat");
+
+    if(data[key]){
+      menu.innerHTML = data[key];
+      menu.style.display = "grid";
+    } else {
+      menu.style.display = "none";
+    }
+  });
+});
+
+// hide when mouse leaves
+menu.addEventListener("mouseleave", () => {
+  menu.style.display = "none";
+});
+
+let slides = document.querySelectorAll(".slide");
+let index = 0;
+
+function changeSlide(){
+  slides[index].classList.remove("active");
+  index = (index + 1) % slides.length;
+  slides[index].classList.add("active");
+}
+
+// auto change every 3 sec
+setInterval(changeSlide, 3000);
+
 /* LOAD PRODUCTS FROM SHEET */
 async function loadProducts(){
   let res = await fetch(API_URL + "?type=products");
   let data = await res.json();
-
+loadLatestProducts(data);
+loadOfferProducts(data);
   let container = document.getElementById("productContainer");
   container.innerHTML = "";
 
-  // ✅ Show all products from sheet dynamically
-  data.forEach(p=>{
+  data.forEach((p,index)=>{
+
+    let img1 = p[3];
+    let img2 = p[4];
+    let img3 = p[5];
+
     container.innerHTML += `
       <div class="card reveal">
-        <img src="${p[3]}">
+
+        <div class="product-slider" id="ps${index}">
+          <img src="${img1}" class="product-slide active">
+          ${img2?`<img src="${img2}" class="product-slide">`:""}
+          ${img3?`<img src="${img3}" class="product-slide">`:""}
+
+          <button class="ps-prev" onclick="changePS(${index},-1)">❮</button>
+          <button class="ps-next" onclick="changePS(${index},1)">❯</button>
+
+          <div class="ps-dots" id="dots${index}"></div>
+        </div>
+
         <div class="card-content">
           <h3>${p[0]}</h3>
           <p>Category: ${p[2]}</p>
@@ -172,12 +1897,23 @@ async function loadProducts(){
           <button class="btn" onclick='showDetailsDynamic(${JSON.stringify(p)})'>View Details</button>
           <button class="btn" onclick="addToCart('${p[0]}')">Add to Cart</button>
         </div>
+
       </div>
+      
+
+
     `;
   });
+
+  // 🔥 IMPORTANT (tumne miss kiya tha)
+  data.forEach((p,index)=>{
+    createDots(index);
+    autoSlide(index);
+    enableSwipe(index);
+  });
+
   activateScroll();
 }
-
 /* ADD TO CART + TRACK */
 function updateCartCount(){
     let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
@@ -191,7 +1927,20 @@ function updateCartCount(){
 
 // call this when page loads
 updateCartCount();
+function searchProducts(){
+  let input = document.getElementById("searchInput").value.toLowerCase();
+  let cards = document.querySelectorAll(".card");
 
+  cards.forEach(card => {
+    let text = card.innerText.toLowerCase();
+
+    if(text.includes(input)){
+      card.style.display = "";
+    } else {
+      card.style.display = "none";
+    }
+  });
+}
 // call this after adding item to cart
 function addToCart(product){
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -217,18 +1966,35 @@ function activateScroll(){
 
 /* SHOW FULL DETAILS IN MODAL DYNAMICALLY */
 function showDetailsDynamic(productRow){
+
   document.getElementById("modalName").innerText = productRow[0];
-  document.getElementById("modalImage").src = productRow[3];
+
+  // 🔥 FIXED IMAGE SLIDER
+  document.getElementById("modalImage").parentElement.innerHTML = `
+    <div id="modalSlider">
+      <img src="${productRow[3]}" class="modal-slide active">
+      ${productRow[4] ? `<img src="${productRow[4]}" class="modal-slide">` : ""}
+      ${productRow[5] ? `<img src="${productRow[5]}" class="modal-slide">` : ""}
+      
+      <div class="ps-dots" id="modalDots"></div>
+    </div>
+  `;
+
   document.getElementById("modalPrice").innerText = "Price: ₹" + productRow[1];
   document.getElementById("modalCategory").innerText = "Category: " + productRow[2];
 
   let detailsHtml = "";
-  for(let i=4; i<productRow.length; i++){
-    if(productRow[i] && productRow[i] != "") detailsHtml += `<p>${productRow[i]}</p>`;
+  for(let i=6; i<productRow.length; i++){
+    if(productRow[i] && productRow[i] !== ""){
+      detailsHtml += `<p>${productRow[i]}</p>`;
+    }
   }
   document.getElementById("modalDetails").innerHTML = detailsHtml;
 
   document.getElementById("detailModal").style.display = "flex";
+
+  // 🔥 dots init after render
+  setTimeout(createModalDots, 100);
 }
 
 /* CLOSE MODAL */
@@ -242,11 +2008,695 @@ window.onclick = function(e){
     document.getElementById("detailModal").style.display = "none";
   }
 }
-
 /* INIT */
 loadProducts();
 
+
+let profileBtn = document.getElementById("profileBtn");
+let profileMenu = document.getElementById("profileMenu");
+
+// toggle on click
+profileBtn.onclick = function(){
+  profileMenu.style.display = profileMenu.style.display === "block" ? "none" : "block";
+}
+
+// outside click close
+window.addEventListener("click", function(e){
+  if(!document.querySelector(".profile-box").contains(e.target)){
+    profileMenu.style.display = "none";
+  }
+});
+
+function toggleReviewForm(){
+  let form = document.getElementById("reviewForm");
+
+  if(form.style.display === "none"){
+    form.style.display = "block";
+    form.scrollIntoView({behavior:"smooth"});
+  } else {
+    form.style.display = "none";
+  }
+}
+
 </script>
 
+<!-- SIGNUP MODAL -->
+<div id="signupModal" style="
+display:none;
+position:fixed;
+top:0; left:0;
+width:100%; height:100%;
+background:rgba(0,0,0,0.6);
+z-index:3000;
+justify-content:center;
+align-items:center;
+">
+
+  <div style="
+  width:350px;
+  background:white;
+  border-radius:15px;
+  overflow:hidden;
+  ">
+
+    <!-- TOP BANNER -->
+    <div style="background:linear-gradient(135deg,#ff4da6,#d10073); color:white; padding:20px;">
+      <h2>Great Quality</h2>
+      <h2>Lowest Prices</h2>
+    </div>
+
+    <!-- FORM -->
+    <div style="padding:20px;">
+      <h3>Sign Up to view your profile</h3>
+
+      <p style="font-size:12px; margin-top:15px;">Country</p>
+
+      <div style="display:flex; gap:10px; align-items:center; margin-top:5px;">
+        <span><B>IN +91</B></span>
+        <input id="phoneInput" type="text" placeholder="Phone Number"
+        style="flex:1; padding:8px; border:none; border-bottom:1px solid #ccc;">
+      </div>
+
+      <button onclick="submitSignup()" style="
+      width:100%;
+      margin-top:20px;
+      padding:12px;
+      background:#d10073;
+      color:white;
+      border:none;
+      border-radius:5px;
+      cursor:pointer;
+      ">
+      Continue
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ⭐ CUSTOMER REVIEWS -->
+<section class="review-section">
+
+  <h2 class="review-title">What Our Customers Say</h2>
+  
+  <!-- HIDDEN FORM -->
+  <div id="reviewForm" class="review-form">
+
+    <input id="reviewName" placeholder="Your Name">
+
+    <div id="starBox">
+      <span class="star" onclick="setRating(1)">☆</span>
+      <span class="star" onclick="setRating(2)">☆</span>
+      <span class="star" onclick="setRating(3)">☆</span>
+      <span class="star" onclick="setRating(4)">☆</span>
+      <span class="star" onclick="setRating(5)">☆</span>
+    </div>
+
+    <textarea id="reviewText" placeholder="Write your review..."></textarea>
+
+    <button class="btn" onclick="submitReview()">Submit Review</button>
+
+  </div>
+
+  <!-- REVIEWS -->
+  <div id="reviewContainer"></div>
+
+  <!-- BUTTONS -->
+  <div class="review-actions">
+    <button class="write-review-btn" onclick="toggleReviewForm()">✍️ Add Your Review</button>
+  </div>
+
+</section>
+
+<script>
+
+// OPEN MODAL
+function openSignup(){
+  document.getElementById("signupModal").style.display = "flex";
+}
+
+// CLOSE ON OUTSIDE CLICK
+window.addEventListener("click", function(e){
+  let modal = document.getElementById("signupModal");
+  if(e.target === modal){
+    modal.style.display = "none";
+  }
+});
+
+// SUBMIT
+function submitSignup(){
+  let phone = document.getElementById("phoneInput").value;
+
+  if(phone.trim() === ""){
+    alert("Enter phone number!");
+    return;
+  }
+
+  localStorage.setItem("user", phone);
+
+  alert("Signup Successful 🎉");
+
+  document.getElementById("signupModal").style.display = "none";
+
+  location.reload();
+}
+
+/* 🔥 CARD IMAGE SLIDER */
+function changePS_old(btn, dir){
+  let slider = btn.parentElement;
+  let slides = slider.querySelectorAll(".product-slide");
+
+  let activeIndex = 0;
+  slides.forEach((s,i)=>{
+    if(s.classList.contains("active")) activeIndex = i;
+    s.classList.remove("active");
+  });
+
+  activeIndex = (activeIndex + dir + slides.length) % slides.length;
+  slides[activeIndex].classList.add("active");
+}
+
+let modalIndex = 0;
+function changeModal(dir){
+  let slides = document.querySelectorAll(".modal-slide");
+
+  slides.forEach(s=>s.classList.remove("active"));
+
+  modalIndex = (modalIndex + dir + slides.length) % slides.length;
+  slides[modalIndex].classList.add("active");
+}
+
+let psIndex = {};
+
+// CHANGE SLIDE
+function changePS(id,dir){
+
+  let slider;
+
+  if(typeof id === "string"){
+    slider = document.getElementById(id.includes("latest") ? "latestPS"+id.replace("latest","") :
+                                      id.includes("offer") ? "offerPS"+id.replace("offer","") :
+                                      "ps"+id);
+  } else {
+    slider = document.getElementById("ps"+id);
+  }
+
+  let slides = slider.querySelectorAll(".product-slide");
+
+  if(!(id in psIndex)) psIndex[id] = 0;
+
+  slides[psIndex[id]].classList.remove("active");
+
+  psIndex[id] = (psIndex[id] + dir + slides.length) % slides.length;
+
+  slides[psIndex[id]].classList.add("active");
+
+  updateDots(id);
+}
+
+// DOTS CREATE
+function createDots(id){
+  let slider = document.getElementById("ps"+id);
+  let slides = slider.querySelectorAll(".product-slide");
+  let dotsBox = document.getElementById("dots"+id);
+
+  dotsBox.innerHTML = "";
+
+  slides.forEach((_,i)=>{
+    dotsBox.innerHTML += `<div class="ps-dot ${i==0?"active":""}" onclick="goToSlide(${id},${i})"></div>`;
+  });
+}
+
+// DOT CLICK
+function goToSlide(id,i){
+  let slider = document.getElementById("ps"+id);
+  let slides = slider.querySelectorAll(".product-slide");
+
+  slides.forEach(s=>s.classList.remove("active"));
+
+  psIndex[id] = i;
+  slides[i].classList.add("active");
+
+  updateDots(id);
+}
+
+// UPDATE DOTS
+function updateDots(id){
+  let dots = document.querySelectorAll(`#dots${id} .ps-dot`);
+  dots.forEach(d=>d.classList.remove("active"));
+
+  if(dots[psIndex[id]]) dots[psIndex[id]].classList.add("active");
+}
+
+// AUTO SLIDE
+function autoSlide(id){
+  setInterval(()=>{
+    changePS(id,1);
+  },3000);
+}
+
+// SWIPE SUPPORT
+function enableSwipe(id){
+  let slider = document.getElementById("ps"+id);
+  let startX = 0;
+
+  slider.addEventListener("touchstart", e=>{
+    startX = e.touches[0].clientX;
+  });
+
+  slider.addEventListener("touchend", e=>{
+    let endX = e.changedTouches[0].clientX;
+
+    if(startX - endX > 50){
+      changePS(id,1);
+    } else if(endX - startX > 50){
+      changePS(id,-1);
+    }
+  });
+}
+
+function autoSlideCustom(id){
+  let slider = document.getElementById(id);
+  let slides = slider.querySelectorAll(".product-slide");
+  let i = 0;
+
+  setInterval(()=>{
+    slides[i].classList.remove("active");
+    i = (i + 1) % slides.length;
+    slides[i].classList.add("active");
+  },3000);
+}
+
+function createModalDots(){
+  let slides = document.querySelectorAll(".modal-slide");
+  let dotsBox = document.getElementById("modalDots");
+
+  dotsBox.innerHTML = "";
+
+  slides.forEach((_,i)=>{
+    dotsBox.innerHTML += `<div class="ps-dot ${i==0?"active":""}" onclick="goModalSlide(${i})"></div>`;
+  });
+}
+
+function goModalSlide(i){
+  let slides = document.querySelectorAll(".modal-slide");
+
+  slides.forEach(s=>s.classList.remove("active"));
+  slides[i].classList.add("active");
+
+  modalIndex = i;
+
+  let dots = document.querySelectorAll("#modalDots .ps-dot");
+  dots.forEach(d=>d.classList.remove("active"));
+  dots[i].classList.add("active");
+}
+
+
+/* ⭐ LOAD REVIEWS */
+let allReviews = [];
+let showAll = false;
+
+async function loadReviews(){
+  let res = await fetch(API_URL + "?type=reviews");
+  let data = await res.json();
+
+  allReviews = data.reverse(); // latest first
+  renderReviews();
+}
+
+function renderReviews(){
+  let container = document.getElementById("reviewContainer");
+  container.innerHTML = "";
+let reviewsToShow = allReviews;
+  reviewsToShow.forEach((r,i)=>{
+
+    let name = r.name || r[1] || "User";
+    let rating = Number(r.rating || r[2] || 5);
+    let comment = r.text || r.comment || r[3] || "No review";
+
+    let stars = "⭐".repeat(rating);
+    let initial = name.charAt(0).toUpperCase();
+
+    container.innerHTML += `
+      <div class="review-card">
+        
+        <div class="review-header">
+          <div class="review-avatar">${initial}</div>
+          
+          <div class="review-user">
+            <div class="review-name">${name}</div>
+            <div class="verified">✔ Verified Buyer</div>
+          </div>
+        </div>
+
+        <div class="review-stars">${stars}</div>
+
+        <div class="review-text">"${comment}"</div>
+
+      </div>
+    `;
+  });
+
+  // 🔥 start auto scroll
+  startAutoScroll();
+
+  // 🔥 stop on hover
+  container.onmouseenter = stopAutoScroll;
+  container.onmouseleave = startAutoScroll;
+}
+let reviewScrollInterval;
+
+function startAutoScroll(){
+  let container = document.getElementById("reviewContainer");
+
+  reviewScrollInterval = setInterval(()=>{
+    container.scrollBy({
+      left: 300,
+      behavior: "smooth"
+    });
+
+    // loop back
+    if(container.scrollLeft + container.clientWidth >= container.scrollWidth - 10){
+      container.scrollTo({left:0, behavior:"smooth"});
+    }
+
+  }, 2500);
+}
+
+function stopAutoScroll(){
+  clearInterval(reviewScrollInterval);
+}
+
+function viewAllReviews(){
+  showAll = !showAll;
+
+  let btn = document.querySelector(".review-actions .btn");
+
+  if(showAll){
+    btn.innerText = "Show Less";
+  } else {
+    btn.innerText = "View All Reviews";
+  }
+
+  renderReviews();
+}
+
+/* ⭐ SUBMIT REVIEW */
+async function submitReview(){
+  let name = document.getElementById("reviewName").value;
+  let text = document.getElementById("reviewText").value;
+
+  if(!name || !text){
+    alert("Please fill all fields");
+    return;
+  }
+
+  await fetch(API_URL + "?type=addReview", {
+    method: "POST",
+    body: JSON.stringify({
+      name,
+      rating: selectedRating,
+      text
+    })
+  });
+
+  alert("Review Submitted 🎉");
+
+  document.getElementById("reviewName").value = "";
+  document.getElementById("reviewText").value = "";
+document.getElementById("reviewForm").style.display = "none";
+  setRating(5); // reset
+
+  loadReviews();
+}
+
+/* INIT */
+loadReviews();
+
+let selectedRating = 5;
+
+function setRating(num){
+  selectedRating = num;
+
+  let stars = document.querySelectorAll(".star");
+
+  stars.forEach((s,i)=>{
+    if(i < num){
+      s.innerText = "⭐";
+      s.classList.add("active");
+    } else {
+      s.innerText = "☆";
+      s.classList.remove("active");
+    }
+  });
+}
+
+function loadLatestProducts(data){
+
+  let container = document.getElementById("latestContainer");
+  container.innerHTML = "";
+
+  let latestProducts = data.filter(p => 
+    (p[2] || "").toLowerCase().includes("latest")
+  );
+
+  latestProducts.forEach((p,index)=>{
+
+    container.innerHTML += `
+      <div class="card">
+
+        <div class="product-slider" id="latestPS${index}">
+          <img src="${p[3]}" class="product-slide active">
+          ${p[4]?`<img src="${p[4]}" class="product-slide">`:""}
+          ${p[5]?`<img src="${p[5]}" class="product-slide">`:""}
+
+          <button class="ps-prev" onclick="changePS('latest${index}',-1)">❮</button>
+          <button class="ps-next" onclick="changePS('latest${index}',1)">❯</button>
+
+          <div class="ps-dots" id="latestDots${index}"></div>
+        </div>
+
+        <div class="card-content">
+          <h3>${p[0]}</h3>
+          <p>₹${p[1]}</p>
+
+          <button class="btn" onclick='showDetailsDynamic(${JSON.stringify(p)})'>
+            View Details
+          </button>
+
+          <button class="btn" onclick="addToCart('${p[0]}')">
+            Add to Cart
+          </button>
+        </div>
+
+      </div>
+    `;
+  });
+
+  latestProducts.forEach((p,index)=>{
+    createDotsCustom("latest", index);
+    autoSlideCustomFull("latest", index);
+  });
+
+  // ✅ AUTO SCROLL INSIDE FUNCTION
+  setInterval(()=>{
+    container.scrollBy({left:260, behavior:"smooth"});
+    if(container.scrollLeft + container.clientWidth >= container.scrollWidth - 10){
+      container.scrollTo({left:0, behavior:"smooth"});
+    }
+  }, 3000);
+}
+
+function createDotsCustom(type,id){
+  let slider = document.getElementById(type+"PS"+id);
+  let slides = slider.querySelectorAll(".product-slide");
+  let dotsBox = document.getElementById(type+"Dots"+id);
+
+  dotsBox.innerHTML = "";
+
+  slides.forEach((_,i)=>{
+    dotsBox.innerHTML += `<div class="ps-dot ${i==0?"active":""}" onclick="goToSlideCustom('${type}',${id},${i})"></div>`;
+  });
+}
+
+function goToSlideCustom(type,id,i){
+  let slider = document.getElementById(type+"PS"+id);
+  let slides = slider.querySelectorAll(".product-slide");
+
+  slides.forEach(s=>s.classList.remove("active"));
+  slides[i].classList.add("active");
+}
+
+function autoSlideCustomFull(type,id){
+  let slider = document.getElementById(type+"PS"+id);
+  let slides = slider.querySelectorAll(".product-slide");
+  let i = 0;
+
+  setInterval(()=>{
+    slides[i].classList.remove("active");
+    i = (i + 1) % slides.length;
+    slides[i].classList.add("active");
+  },3000);
+}
+
+function loadOfferProducts(data){
+
+  let container = document.getElementById("offerContainer");
+  container.innerHTML = "";
+
+  let offers = data.filter(p => 
+    (p[2] || "").toLowerCase().includes("offer")
+  );
+
+  offers.forEach((p,index)=>{
+
+    container.innerHTML += `
+      <div class="card">
+
+        <div class="product-slider" id="offerPS${index}">
+          <img src="${p[3]}" class="product-slide active">
+          ${p[4]?`<img src="${p[4]}" class="product-slide">`:""}
+          ${p[5]?`<img src="${p[5]}" class="product-slide">`:""}
+
+          <button class="ps-prev" onclick="changePS('offer${index}',-1)">❮</button>
+          <button class="ps-next" onclick="changePS('offer${index}',1)">❯</button>
+
+          <div class="ps-dots" id="offerDots${index}"></div>
+        </div>
+
+        <div class="card-content">
+          <h3>${p[0]}</h3>
+          <p>₹${p[1]}</p>
+
+          <button class="btn" onclick='showDetailsDynamic(${JSON.stringify(p)})'>
+            View Details
+          </button>
+
+          <button class="btn" onclick="addToCart('${p[0]}')">
+            Add to Cart
+          </button>
+        </div>
+
+      </div>
+    `;
+  });
+
+  offers.forEach((p,index)=>{
+    createDotsCustom("offer", index);
+    autoSlideCustomFull("offer", index);
+  });
+}
+async function submitContact(){
+
+  let name = document.getElementById("cName").value;
+  let phone = document.getElementById("cPhone").value;
+  let address = document.getElementById("cAddress").value;
+  let msg = document.getElementById("cMsg").value;
+
+  if(!name || !phone){
+    alert("Please fill required fields");
+    return;
+  }
+
+  await fetch(API_URL + "?type=addContact", {
+    method:"POST",
+    body: JSON.stringify({
+      name,
+      phone,
+      address,
+      message: msg
+    })
+  });
+
+  alert("Submitted Successfully ✅");
+
+  // clear
+  document.getElementById("cName").value="";
+  document.getElementById("cPhone").value="";
+  document.getElementById("cAddress").value="";
+  document.getElementById("cMsg").value="";
+}
+
+function enableAutoScroll(id){
+  let container = document.getElementById(id);
+
+  if(!container) return;
+
+  setInterval(()=>{
+    container.scrollBy({left:260, behavior:"smooth"});
+
+    if(container.scrollLeft + container.clientWidth >= container.scrollWidth - 10){
+      container.scrollTo({left:0, behavior:"smooth"});
+    }
+  }, 3000);
+}
+
+enableAutoScroll("reviewContainer");
+enableAutoScroll("latestContainer");
+enableAutoScroll("offerContainer");
+
+function animateConnectBox(){
+  let box = document.querySelector(".connect-box");
+
+  let position = box.getBoundingClientRect().top;
+  let screenHeight = window.innerHeight;
+
+  if(position < screenHeight - 100){
+    box.classList.add("active");
+  }
+}
+
+window.addEventListener("scroll", animateConnectBox);
+window.addEventListener("load", animateConnectBox);
+
+/* OPEN FORM */
+function openConnectForm(){
+  document.getElementById("connectPopup")
+  .classList.add("active");
+}
+
+/* CLOSE FORM */
+function closeConnectForm(){
+  document.getElementById("connectPopup")
+  .classList.remove("active");
+}
+
+/* outside click close */
+window.addEventListener("click", function(e){
+
+  let popup = document.getElementById("connectPopup");
+
+  if(e.target === popup){
+    closeConnectForm();
+  }
+
+});
+
+/* auto open every 5 min */
+setInterval(()=>{
+
+  openConnectForm();
+
+},300000);
+
+/* first open after 10 sec */
+setTimeout(()=>{
+
+  openConnectForm();
+
+},10000);
+
+</script>
+<a href="https://wa.me/916397865325?text=Hi%20I%20am%20interested%20in%20your%20products" 
+   class="whatsapp-float" 
+   target="_blank">
+
+   <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
+
+</a>
+<!-- CONNECT FLOAT BUTTON -->
+<div class="connect-float" onclick="openConnectForm()">
+  📩
+</div>
 </body>
 </html>

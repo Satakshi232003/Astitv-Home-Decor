@@ -46,9 +46,22 @@ color:white;
 /* PRODUCTS */
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+grid-template-columns:repeat(4,1fr); /* 🔥 fixed layout */
 gap:30px;
 padding:30px 50px;
+}
+
+/* responsive */
+@media(max-width:1000px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:600px){
+  .grid{
+    grid-template-columns:repeat(1,1fr);
+  }
 }
 .card{
 background:rgba(255,255,255,0.05);
@@ -60,18 +73,41 @@ transition:0.4s;
 transform:translateY(-10px) scale(1.03);
 box-shadow:0 0 30px rgba(255,215,0,0.3);
 }
-.card img{
+
+/* SLIDER */
+.slider{
+position:relative;
 width:100%;
 height:250px;
-object-fit:cover;
+overflow:hidden;
 }
-.content{
-padding:20px;
+.slide{
+position:absolute;
+width:100%;
+height:100%;
+object-fit:contain;   /* 🔥 full image dikhegi */
+background:#000;      /* optional */
+opacity:0;
+transition:0.5s;
 }
-.price{
-color:gold;
-margin:10px 0;
+.slide.active{opacity:1;}
+
+.prev,.next{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+background:rgba(0,0,0,0.5);
+border:none;
+color:white;
+font-size:20px;
+cursor:pointer;
+padding:5px 10px;
 }
+.prev{left:10px;}
+.next{right:10px;}
+
+.content{padding:20px;}
+.price{color:gold;margin:10px 0;}
 .btn{
 width:100%;
 padding:10px;
@@ -92,31 +128,60 @@ background:rgba(0,0,0,0.9);
 justify-content:center;
 align-items:center;
 z-index:2000;
-overflow:auto;
-padding:50px 20px;
+padding:20px;
 }
 .modal-inner{
 background:#111;
-color:white;
 border-radius:20px;
 max-width:800px;
 width:100%;
-padding:30px;
+padding:20px;
 position:relative;
-display:flex;
-flex-wrap:wrap;
-gap:20px;
 }
 #closeModal{
-position:absolute; top:15px; right:20px;
-font-size:30px; cursor:pointer; font-weight:bold;
+position:absolute;
+top:10px;
+right:15px;
+font-size:28px;
+cursor:pointer;
 }
-#modalImage{
-width:100%; border-radius:15px; object-fit:cover;
+
+/* MODAL SLIDER */
+.modalSlider{
+position:relative;
+height:300px;
+overflow:hidden;
+margin-bottom:20px;
 }
-#modalDetails{
-max-height:400px; overflow-y:auto; line-height:1.6; padding-right:10px;
+.modalSlide{
+position:absolute;
+width:100%;
+height:100%;
+object-fit:contain;
+background:#000;
+opacity:0;
+transition:0.5s;
 }
+.modalSlide.active{opacity:1;}
+
+.modal-inner{
+display:flex;
+gap:30px;
+align-items:flex-start;
+}
+
+.modalSlider{
+flex:1;
+height:300px;
+}
+
+.modal-right{
+flex:1;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
 </style>
 
 </head>
@@ -126,19 +191,12 @@ max-height:400px; overflow-y:auto; line-height:1.6; padding-right:10px;
 <h2>ASTITV</h2>
 <nav>
 <a href="index.html">Home</a>
-<a href="cart.html" style="position:relative;">Cart
-  <span id="cartCount" 
-        style="position:absolute; top:-8px; right:-8px; background:gold; color:black; 
-               font-size:12px; font-weight:bold; padding:2px 6px; border-radius:50%; min-width:18px; text-align:center;">
-    0
-  </span>
-</a>
+<a href="cart.html">Cart <span id="cartCount">0</span></a>
 </nav>
 </header>
 
 <div class="top-bar">
-<input type="text" id="search" class="search" placeholder="Search products..." onkeyup="searchProduct()">
-
+<input type="text" id="search" class="search" placeholder="Search..." onkeyup="searchProduct()">
 <div class="filter">
 <button onclick="filterCategory('all')" class="active">All</button>
 <button onclick="filterCategory('Pure Brass')">Pure Brass</button>
@@ -150,163 +208,196 @@ max-height:400px; overflow-y:auto; line-height:1.6; padding-right:10px;
 
 <div class="grid" id="productGrid"></div>
 
-<!-- Modal for full product details -->
+<!-- MODAL -->
 <div id="detailModal">
-  <div class="modal-inner">
-    <span id="closeModal">&times;</span>
-    <div style="flex:1 1 300px;text-align:center;">
-      <img id="modalImage" src="" alt=""/>
-    </div>
-    <div style="flex:1 1 300px; display:flex; flex-direction:column; gap:15px;">
-      <h2 id="modalName" style="font-size:28px;color:gold;"></h2>
-      <p id="modalPrice" style="font-size:20px;font-weight:bold;">Price: </p>
-      <p id="modalCategory" style="font-size:16px;opacity:0.8;">Category: </p>
-      <hr style="border:1px solid gold;margin:10px 0;">
-      <h3 style="color:gold;margin-bottom:10px;">Full Details</h3>
-      <div id="modalDetails"></div>
-      <button class="btn" style="margin-top:auto;" onclick="addToCart(document.getElementById('modalName').innerText)">Add to Cart</button>
-    </div>
-  </div>
+<div class="modal-inner">
+<span id="closeModal">&times;</span>
+
+<!-- LEFT IMAGE -->
+<div class="modalSlider" id="modalSlider"></div>
+
+<!-- RIGHT DETAILS -->
+<div class="modal-right">
+  <h2 id="modalName"></h2>
+  <p id="modalPrice"></p>
+  <p id="modalCategory"></p>
+
+  <hr>
+
+  <div id="modalDetails"></div>
+
+  <button class="btn" onclick="addToCart(document.getElementById('modalName').innerText)">
+    Add to Cart
+  </button>
 </div>
+</div>
+</div>   <!-- ❗ modal-inner close -->
+</div>   <!-- ❗ detailModal close -->
 
 <script>
 let products = [];
+let allProducts = [];
 let currentCategory = "all";
+let modalIndex = 0;
 
-/* FETCH FROM GOOGLE SHEET */
+/* FETCH */
 async function fetchProducts(){
-  try{
-    let res = await fetch("https://script.google.com/macros/s/AKfycbwvUdn4OSiFy3JeJWPfM8ah_V6T3hBCl6nFxyEqy4ASn4F_9BucnH1CB8oSvadgrd1f/exec?type=products");
-    let data = await res.json();
-
-    // Map entire row dynamically
-    products = data.map(p => p);
-
-    displayProducts();
-  }catch(err){
-    console.log("Error loading products", err);
-  }
+  let res = await fetch("https://script.google.com/macros/s/AKfycbwvUdn4OSiFy3JeJWPfM8ah_V6T3hBCl6nFxyEqy4ASn4F_9BucnH1CB8oSvadgrd1f/exec?type=products");
+  allProducts = await res.json();
+  products = [...allProducts];
+  displayProducts();
 }
 
-/* DISPLAY PRODUCTS */
+/* DISPLAY */
 function displayProducts(){
   let grid = document.getElementById("productGrid");
   grid.innerHTML = "";
 
-  let searchValue = document.getElementById("search").value.toLowerCase().trim();
+  let searchVal = document.getElementById("search").value.toLowerCase();
 
-  products.forEach(p=>{
-    let name = p.name || p[0];
-    let category = (p.category || p[2] || "").toLowerCase();
-    let price = p.price || p[1];
-    let img = p.img || p[3];
+  products.forEach((p,index)=>{
 
-    // Advanced search: check if any word in searchValue exists in any property
-    let matchSearch = searchValue === "" || Object.values(p).some(val=>{
-      if(!val) return false;
-      return val.toString().toLowerCase().includes(searchValue);
-    });
+    let name = p[0];
+    let price = p[1];
 
-    // Category filter
-    let matchCategory = (currentCategory === "all" || category === currentCategory.toLowerCase());
+    // ✅ MULTIPLE CATEGORY SUPPORT
+    let categoryList = (p[2] || "").toLowerCase().split(",").map(c => c.trim());
 
-    if(matchSearch && matchCategory){
-      grid.innerHTML += `
-      <div class="card">
-        <img src="${img}">
-        <div class="content">
-          <h3>${name}</h3>
-          <p class="price">₹${price}</p>
-          <button class="btn" onclick='showDetailsDynamic(${JSON.stringify(p)})'>View Details</button>
-          <br><br>
-          <a href="product-detail.html?name=${encodeURIComponent(name)}" style="color:gold;">Go to Page</a>
-        </div>
-      </div>`;
+    // ✅ CATEGORY FILTER
+    if(currentCategory != "all" && !categoryList.includes(currentCategory.toLowerCase())){
+      return;
     }
+
+    // ✅ SEARCH FILTER
+    if(searchVal && !Object.values(p).join(" ").toLowerCase().includes(searchVal)){
+      return;
+    }
+
+    let img1=p[3];
+    let img2=p[4];
+    let img3=p[5];
+
+    grid.innerHTML+=`
+    <div class="card">
+
+      <div class="slider" id="slider${index}">
+        <img src="${img1}" class="slide active">
+        ${img2?`<img src="${img2}" class="slide">`:""}
+        ${img3?`<img src="${img3}" class="slide">`:""}
+
+        <button class="prev" onclick="changeSlide(${index},-1)">❮</button>
+        <button class="next" onclick="changeSlide(${index},1)">❯</button>
+      </div>
+
+      <div class="content">
+        <h3>${name}</h3>
+        <p class="price">₹${price}</p>
+        <button class="btn" onclick='showDetails(${JSON.stringify(p)})'>View Details</button>
+      </div>
+
+    </div>`;
   });
 }
 
-/* SEARCH */
-function searchProduct(){ displayProducts(); }
-
-/* FILTER */
+/* CATEGORY FILTER */
 function filterCategory(cat){
   currentCategory = cat;
-  document.querySelectorAll(".filter button").forEach(btn=>btn.classList.remove("active"));
+
+  document.querySelectorAll(".filter button").forEach(b=>b.classList.remove("active"));
   event.target.classList.add("active");
+
+  products = [...allProducts];
   displayProducts();
 }
 
-/* CART */
-// update badge
-function updateCartCount(){
-  let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-  let cartCountElem = document.getElementById("cartCount");
-  if(cartCountElem){
-    cartCountElem.innerText = cartItems.length;
-    cartCountElem.style.display = cartItems.length > 0 ? "flex" : "none";
+/* SEARCH */
+function searchProduct(){
+  products = [...allProducts];
+  displayProducts();
+}
+
+/* SLIDER */
+function changeSlide(index,dir){
+  let slides=document.querySelectorAll(`#slider${index} .slide`);
+  let active=0;
+
+  slides.forEach((s,i)=>{
+    if(s.classList.contains("active")) active=i;
+    s.classList.remove("active");
+  });
+
+  let next=(active+dir+slides.length)%slides.length;
+  slides[next].classList.add("active");
+}
+
+/* MODAL */
+function showDetails(p){
+
+  let slider=document.getElementById("modalSlider");
+  slider.innerHTML="";
+
+  let imgs=[p[3],p[4],p[5]].filter(i=>i);
+
+  imgs.forEach((img,i)=>{
+    slider.innerHTML+=`<img src="${img}" class="modalSlide ${i==0?'active':''}">`;
+  });
+
+  slider.innerHTML+=`
+  <button class="prev" onclick="changeModalSlide(-1)">❮</button>
+  <button class="next" onclick="changeModalSlide(1)">❯</button>
+  `;
+
+  document.getElementById("modalName").innerText=p[0];
+  document.getElementById("modalPrice").innerText="₹ "+p[1];
+  document.getElementById("modalCategory").innerText=p[2];
+
+  let details="";
+  for(let i=6;i<=25;i++){
+    if(p[i]) details+=`<p>${p[i]}</p>`;
+  }
+  document.getElementById("modalDetails").innerHTML=details;
+
+  document.getElementById("detailModal").style.display="flex";
+  modalIndex=0;
+}
+
+/* MODAL SLIDE */
+function changeModalSlide(dir){
+  let slides=document.querySelectorAll(".modalSlide");
+  slides.forEach(s=>s.classList.remove("active"));
+
+  modalIndex=(modalIndex+dir+slides.length)%slides.length;
+  slides[modalIndex].classList.add("active");
+}
+
+/* CLOSE */
+document.getElementById("closeModal").onclick=()=>{
+  document.getElementById("detailModal").style.display="none";
+}
+
+window.onclick=(e)=>{
+  if(e.target.id=="detailModal"){
+    document.getElementById("detailModal").style.display="none";
   }
 }
 
-// call on page load
+/* CART */
+function updateCartCount(){
+  let cart=JSON.parse(localStorage.getItem("cart"))||[];
+  document.getElementById("cartCount").innerText=cart.length;
+}
 updateCartCount();
 
-// call after adding product to cart
 function addToCart(product){
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let cart=JSON.parse(localStorage.getItem("cart"))||[];
   cart.push(product);
-  localStorage.setItem("cart", JSON.stringify(cart));
-  updateCartCount(); // update badge live
+  localStorage.setItem("cart",JSON.stringify(cart));
+  updateCartCount();
   alert("Added to cart 🛒");
-  
-  // optional: send to Google Sheet
-  fetch("https://script.google.com/macros/s/AKfycbwvUdn4OSiFy3JeJWPfM8ah_V6T3hBCl6nFxyEqy4ASn4F_9BucnH1CB8oSvadgrd1f/exec?type=cart", {
-    method:"POST",
-    body: JSON.stringify({product: product})
-  });
-}
-/* SHOW FULL DETAILS IN MODAL DYNAMICALLY */
-function showDetailsDynamic(productRow){
-  let name = productRow.name || productRow[0];
-  let img = productRow.img || productRow[3];
-  let price = productRow.price || productRow[1];
-  let category = productRow.category || productRow[2];
-
-  document.getElementById("modalName").innerText = name;
-  document.getElementById("modalImage").src = img;
-  document.getElementById("modalPrice").innerText = "Price: ₹" + price;
-  document.getElementById("modalCategory").innerText = "Category: " + category;
-
-  let detailsHtml = "";
-  // Add remaining columns as details
-  for(let i=4;i<Object.keys(productRow).length;i++){
-    let val = productRow[i];
-    if(val && val!="") detailsHtml += `<p>${val}</p>`;
-  }
-  // Also check named detail keys if exist
-  ['detail1','detail2','detail3','detail4'].forEach(k=>{
-    if(productRow[k]) detailsHtml += `<p>${productRow[k]}</p>`;
-  });
-
-  document.getElementById("modalDetails").innerHTML = detailsHtml;
-  document.getElementById("detailModal").style.display = "flex";
-}
-
-/* CLOSE MODAL */
-document.getElementById("closeModal").onclick = function(){
-  document.getElementById("detailModal").style.display = "none";
-}
-
-/* CLOSE MODAL WHEN CLICKING OUTSIDE */
-window.onclick = function(e){
-  if(e.target == document.getElementById("detailModal")){
-    document.getElementById("detailModal").style.display = "none";
-  }
 }
 
 /* INIT */
-fetchProducts();
-</script>
+fetchProducts();</script>
 
 </body>
 </html>
